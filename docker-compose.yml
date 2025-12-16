@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bankMelli-dormitory-app
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    volumes:
+      - .:/var/www/html
+      - ./database:/var/www/html/database
+      - ./storage:/var/www/html/storage
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=sqlite
+      - DB_DATABASE=/var/www/html/database/database.sqlite
+    networks:
+      - bankMelli-dormitory-network
+
+networks:
+  bankMelli-dormitory-network:
+    driver: bridge
+
+volumes:
+  database:
+    driver: local
+  storage:
+    driver: local
