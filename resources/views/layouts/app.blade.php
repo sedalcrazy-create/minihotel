@@ -566,9 +566,8 @@
             <!-- متن وسط -->
             <div class="header-text-content">
                 <h1 class="header-main-title">سیستم مدیریت خوابگاه</h1>
-                <p class="header-main-subtitle">بانک ملی ایران - اداره کل آموزش</p>
                 <div class="header-tagline-box">
-                    <span class="header-tagline-text">مدیریت هوشمند اقامت</span>
+                    <span class="header-tagline-text">اداره کل آموزش بانک ملی ایران</span>
                 </div>
             </div>
 
