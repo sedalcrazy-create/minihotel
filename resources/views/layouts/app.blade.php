@@ -578,7 +578,7 @@
                         <span class="particle particle-3"></span>
                         <span class="particle particle-4"></span>
                     </div>
-                    <img src="http://localhost:8081/logo.png" alt="لوگو بانک ملی" class="header-logo-image">
+                    <img src="{{ asset('logo.png') }}" alt="لوگو بانک ملی" class="header-logo-image">
                 </div>
                 <h1>سیستم مدیریت خوابگاه - بانک ملی</h1>
             </div>
