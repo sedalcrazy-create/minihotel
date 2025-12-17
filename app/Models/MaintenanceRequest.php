@@ -63,6 +63,22 @@ class MaintenanceRequest extends Model
     }
 
     /**
+     * Alias for reporter
+     */
+    public function reportedBy()
+    {
+        return $this->belongsTo(User::class, 'reported_by');
+    }
+
+    /**
+     * Alias for assignee
+     */
+    public function assignedTo()
+    {
+        return $this->belongsTo(User::class, 'assigned_to');
+    }
+
+    /**
      * Scope pending requests
      */
     public function scopePending($query)

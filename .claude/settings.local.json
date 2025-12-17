@@ -15,7 +15,23 @@
       "Bash(docker-compose restart:*)",
       "Bash(npm i:*)",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nInitial commit: سیستم مدیریت خوابگاه بانک ملی - نسخه 1.0.0\n\n✨ امکانات اصلی:\n- ماژول مدیریت پرسنل (با Excel import/export)\n- ماژول رزرو تخت‌ها (132 تخت در 22 واحد)\n- داشبورد با آمار و نمودار\n- سیستم احراز هویت (5 نقش کاربری)\n- طراحی مدرن با Glass Morphism\n- لوگوی متحرک بانک ملی\n\n🐳 Docker:\n- Dockerfile بهینه با PHP 8.2-fpm-alpine\n- docker-compose.yml\n- قابلیت دیپلوی آفلاین\n\n📚 مستندات:\n- DEPLOYMENT.md (راهنمای دیپلوی ویندوز)\n- OFFLINE-DEPLOYMENT.md (دیپلوی آفلاین)\n- CHANGELOG.md (تاریخچه تغییرات)\n- README.md\n\n🔧 تکنولوژی:\n- Laravel 11 + PHP 8.2\n- SQLite Database\n- Nginx + Supervisor\n- Blade Templates + CSS3 Animations\n\n🎨 Generated with Claude Code\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git commit:*)",
+      "Bash(docker info:*)",
+      "Bash(wsl --update)",
+      "Bash(ssh -o StrictHostKeyChecking=no root@37.152.174.87 \"docker exec hotel-app php artisan tinker --execute=\"\"echo App\\\\Models\\\\User::count();\"\"\")",
+      "Bash(ssh -o StrictHostKeyChecking=no root@37.152.174.87 \"docker exec hotel-app sqlite3 /var/www/html/database/database.sqlite ''SELECT id, email, name FROM users;''\")",
+      "Bash(ssh -o StrictHostKeyChecking=no root@37.152.174.87 \"docker exec hotel-app tail -50 /var/www/html/storage/logs/laravel.log 2>/dev/null || echo ''No log file''\")",
+      "Bash(ssh -o StrictHostKeyChecking=no root@37.152.174.87 \"docker exec hotel-app sqlite3 /var/www/html/database/database.sqlite \"\"SELECT email, password FROM users LIMIT 1;\"\"\")",
+      "Bash(ssh -o StrictHostKeyChecking=no root@37.152.174.87 \"cd /var/www/hotel && ls -la && echo ''---'' && docker ps | grep hotel\")",
+      "Bash(ssh:*)",
+      "Bash(git remote add:*)",
+      "Bash(mkdir:*)",
+      "Bash(git push:*)",
+      "Bash(git remote set-url:*)",
+      "Bash(rsync:*)",
+      "Bash(scp:*)"
     ]
   }
 }

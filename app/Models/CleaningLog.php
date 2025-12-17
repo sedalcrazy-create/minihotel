@@ -48,4 +48,12 @@ class CleaningLog extends Model
     {
         return $this->belongsTo(User::class, 'cleaned_by');
     }
+
+    /**
+     * Alias for cleaner
+     */
+    public function cleanedBy()
+    {
+        return $this->belongsTo(User::class, 'cleaned_by');
+    }
 }

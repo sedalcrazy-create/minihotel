@@ -187,13 +187,28 @@
         }
 
         .header-logo-image {
-            width: 60px;
-            height: 60px;
+            width: 55px;
+            height: 55px;
             object-fit: contain;
             position: relative;
             z-index: 10;
             filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
             animation: logo-float 3s ease-in-out infinite;
+            background: linear-gradient(135deg, #f96c08 0%, #e37415 100%);
+            border-radius: 50%;
+            padding: 8px;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .logo-text-bank {
+            font-size: 12px;
+            color: rgba(255,255,255,0.9);
+            font-weight: 500;
         }
 
         @keyframes logo-float {
@@ -580,12 +595,20 @@
                     </div>
                     <img src="{{ asset('logo.png') }}" alt="لوگو بانک ملی" class="header-logo-image">
                 </div>
-                <h1>سیستم مدیریت خوابگاه - بانک ملی</h1>
+                <div class="logo-text">
+                    <h1>سیستم مدیریت خوابگاه</h1>
+                    <span class="logo-text-bank">بانک ملی ایران - اداره کل آموزش</span>
+                </div>
             </div>
             <div class="header-nav">
                 <a href="{{ route('dashboard') }}">داشبورد</a>
                 <a href="{{ route('personnel.index') }}">پرسنل</a>
+                <a href="{{ route('guests.index') }}">مهمان‌ها</a>
                 <a href="{{ route('reservations.index') }}">رزروها</a>
+                <a href="{{ route('meals.index') }}">وعده غذایی</a>
+                <a href="{{ route('cleaning.index') }}">نظافت</a>
+                <a href="{{ route('maintenance.index') }}">تعمیرات</a>
+                <a href="{{ route('reports.index') }}">گزارش‌ها</a>
                 <span style="color: rgba(255,255,255,0.8);">{{ auth()->user()->name }}</span>
                 <form action="{{ route('logout') }}" method="POST" style="display: inline;">
                     @csrf
