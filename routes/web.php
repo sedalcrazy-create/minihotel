@@ -9,6 +9,7 @@ use App\Http\Controllers\MealController;
 use App\Http\Controllers\CleaningController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\BedController;
 
 // Redirect root to dashboard
 Route::get('/', function () {
@@ -59,4 +60,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/reports/reservations', [ReportController::class, 'reservations'])->name('reports.reservations');
     Route::get('/reports/occupancy', [ReportController::class, 'occupancy'])->name('reports.occupancy');
     Route::get('/reports/meals', [ReportController::class, 'meals'])->name('reports.meals');
+
+    // Beds
+    Route::put('/beds/{bed}/status', [BedController::class, 'updateStatus'])->name('beds.update-status');
 });
