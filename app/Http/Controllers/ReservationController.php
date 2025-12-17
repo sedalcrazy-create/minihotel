@@ -23,13 +23,23 @@ class ReservationController extends Controller
         return view('reservations.index', compact('reservations'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $admissionTypes = AdmissionType::where('is_active', true)->get();
         $personnel = Personnel::where('is_active', true)->orderBy('first_name')->get();
-        $rooms = Room::with('unit')->where('is_active', true)->get();
+        $rooms = Room::with(['unit', 'beds'])->where('is_active', true)->get();
 
-        return view('reservations.create', compact('admissionTypes', 'personnel', 'rooms'));
+        // Pre-selected bed and room from dashboard
+        $selectedBedId = $request->get('bed_id');
+        $selectedRoomId = $request->get('room_id');
+
+        // If bed_id is provided but room_id is not, find the room
+        if ($selectedBedId && !$selectedRoomId) {
+            $bed = Bed::find($selectedBedId);
+            $selectedRoomId = $bed ? $bed->room_id : null;
+        }
+
+        return view('reservations.create', compact('admissionTypes', 'personnel', 'rooms', 'selectedBedId', 'selectedRoomId'));
     }
 
     public function store(Request $request)

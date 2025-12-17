@@ -70,12 +70,15 @@
             <select name="room_id" id="room_id" class="form-control" required>
                 <option value="">ابتدا اتاق را انتخاب کنید...</option>
                 @foreach($rooms as $room)
-                    <option value="{{ $room->id }}" data-beds="{{ json_encode($room->beds) }}" {{ old('room_id') == $room->id ? 'selected' : '' }}>
+                    <option value="{{ $room->id }}" data-beds="{{ json_encode($room->beds) }}" {{ (old('room_id') == $room->id || (isset($selectedRoomId) && $selectedRoomId == $room->id)) ? 'selected' : '' }}>
                         واحد {{ $room->unit->number }} - اتاق {{ $room->number }} ({{ $room->unit->section == 'east' ? 'شرقی' : 'غربی' }})
                     </option>
                 @endforeach
             </select>
         </div>
+
+        <!-- تخت از پیش انتخاب شده -->
+        <input type="hidden" id="preSelectedBedId" value="{{ $selectedBedId ?? '' }}">
 
         <div class="form-group" id="bedsSection" style="display: none;">
             <label>انتخاب تخت‌ها * (حداقل 1 تخت)</label>
@@ -119,6 +122,7 @@
         const roomSelect = document.getElementById('room_id');
         const bedsSection = document.getElementById('bedsSection');
         const bedsList = document.getElementById('bedsList');
+        const preSelectedBedId = document.getElementById('preSelectedBedId').value;
 
         // Toggle guest type sections
         function updateGuestSections() {
@@ -139,8 +143,8 @@
         externalRadio.addEventListener('change', updateGuestSections);
 
         // Load beds when room is selected
-        roomSelect.addEventListener('change', function() {
-            const selectedOption = this.options[this.selectedIndex];
+        function loadBeds() {
+            const selectedOption = roomSelect.options[roomSelect.selectedIndex];
 
             if (!selectedOption.value) {
                 bedsSection.style.display = 'none';
@@ -160,22 +164,24 @@
                 }[bed.status] || '#e5e7eb';
 
                 const isAvailable = bed.status === 'available';
+                const isPreSelected = preSelectedBedId && bed.id == preSelectedBedId;
 
                 const bedDiv = document.createElement('div');
                 bedDiv.style.cssText = `
-                    border: 2px solid ${bedColor};
+                    border: 2px solid ${isPreSelected ? '#3b82f6' : bedColor};
                     border-radius: 8px;
                     padding: 15px;
                     text-align: center;
                     cursor: ${isAvailable ? 'pointer' : 'not-allowed'};
                     opacity: ${isAvailable ? '1' : '0.5'};
                     transition: all 0.3s;
-                    background: white;
+                    background: ${isPreSelected ? '#e0f2fe' : 'white'};
                 `;
 
                 bedDiv.innerHTML = `
                     <input type="checkbox" name="bed_ids[]" value="${bed.id}" id="bed_${bed.id}"
                         ${!isAvailable ? 'disabled' : ''}
+                        ${isPreSelected && isAvailable ? 'checked' : ''}
                         style="margin-bottom: 5px;">
                     <label for="bed_${bed.id}" style="display: block; cursor: ${isAvailable ? 'pointer' : 'not-allowed'};">
                         <div style="font-weight: bold;">تخت ${bed.number}</div>
@@ -203,7 +209,9 @@
             });
 
             bedsSection.style.display = 'block';
-        });
+        }
+
+        roomSelect.addEventListener('change', loadBeds);
 
         function updateBedSelection(bedDiv, isChecked) {
             if (isChecked) {
@@ -211,15 +219,13 @@
                 bedDiv.style.borderColor = '#3b82f6';
             } else {
                 bedDiv.style.background = 'white';
-                const checkbox = bedDiv.querySelector('input');
-                const bedColor = {
-                    'available': '#10b981',
-                    'occupied': '#ef4444',
-                    'needs_cleaning': '#f59e0b',
-                    'under_maintenance': '#6b7280'
-                }[checkbox.dataset.status] || '#10b981';
-                bedDiv.style.borderColor = bedColor;
+                bedDiv.style.borderColor = '#10b981';
             }
+        }
+
+        // اگر اتاق از قبل انتخاب شده، تخت‌ها را بارگذاری کن
+        if (roomSelect.value) {
+            loadBeds();
         }
     });
 </script>
