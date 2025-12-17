@@ -55,6 +55,9 @@
                         </td>
                         <td>
                             <a href="{{ route('reservations.show', $reservation) }}" class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;">مشاهده</a>
+                            @if($reservation->status === 'pending' || $reservation->status === 'confirmed')
+                                <a href="{{ route('reservations.edit', $reservation) }}" class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px;">ویرایش</a>
+                            @endif
                         </td>
                     </tr>
                 @endforeach

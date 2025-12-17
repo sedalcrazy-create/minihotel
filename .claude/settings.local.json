@@ -31,7 +31,13 @@
       "Bash(git push:*)",
       "Bash(git remote set-url:*)",
       "Bash(rsync:*)",
-      "Bash(scp:*)"
+      "Bash(scp:*)",
+      "Bash(\"F:/New folder/hotel/app/Http/Controllers/\" )",
+      "Bash(root@37.152.174.87:/var/www/hotel/app/Http/Controllers/)",
+      "Bash(\"F:/New folder/hotel/resources/views/\" )",
+      "Bash(root@37.152.174.87:/var/www/hotel/resources/views/)",
+      "Bash(\"F:/New folder/hotel/routes/web.php\" )",
+      "Bash(root@37.152.174.87:/var/www/hotel/routes/web.php)"
     ]
   }
 }
