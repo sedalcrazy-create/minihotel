@@ -56,8 +56,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 30px 40px;
-            min-height: 140px;
+            padding: 40px 40px;
+            min-height: 200px;
         }
 
         /* متن وسط */
@@ -131,8 +131,8 @@
 
         .header-logo-circle {
             position: relative;
-            width: 120px;
-            height: 120px;
+            width: 180px;
+            height: 180px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -173,16 +173,16 @@
         }
 
         .ring-1 {
-            width: 130px;
-            height: 130px;
+            width: 200px;
+            height: 200px;
             border-color: rgba(255, 246, 133, 0.8);
             border-style: dashed;
             animation-duration: 6s;
         }
 
         .ring-2 {
-            width: 150px;
-            height: 150px;
+            width: 230px;
+            height: 230px;
             border-color: rgba(255, 255, 255, 0.5);
             border-style: dotted;
             animation-duration: 10s;
@@ -190,8 +190,8 @@
         }
 
         .ring-3 {
-            width: 170px;
-            height: 170px;
+            width: 260px;
+            height: 260px;
             border-color: rgba(249, 108, 8, 0.4);
             border-style: solid;
             animation-duration: 14s;
@@ -230,17 +230,17 @@
         }
 
         .header-logo-image {
-            width: 90px;
-            height: 90px;
+            width: 140px;
+            height: 140px;
             object-fit: contain;
             position: relative;
             z-index: 10;
             filter: drop-shadow(0 8px 25px rgba(0,0,0,0.3));
             animation: logo-float 3s ease-in-out infinite;
-            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+            background: transparent;
             border-radius: 50%;
-            padding: 12px;
-            border: 4px solid rgba(255, 246, 133, 0.8);
+            padding: 0;
+            border: none;
         }
 
         @keyframes logo-float {
