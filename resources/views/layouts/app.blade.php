@@ -601,7 +601,7 @@
                         <span class="particle particle-3"></span>
                         <span class="particle particle-4"></span>
                     </div>
-                    <img src="{{ asset('logo.png') }}" alt="لوگو بانک ملی" class="header-logo-image">
+                    <img src="{{ asset('logo.png') }}?v={{ time() }}" alt="لوگو بانک ملی" class="header-logo-image">
                 </div>
                 <div class="logo-bank-name">بانک ملی ایران</div>
             </div>
