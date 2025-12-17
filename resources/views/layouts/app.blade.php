@@ -4,17 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'سیستم مدیریت خوابگاه - بانک ملی')</title>
+    <!-- فونت وزیرمتن از CDN -->
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     <style>
-        @font-face {
-            font-family: 'IRANSans';
-            src: url('/fonts/iran_sans.ttf') format('truetype');
-            font-weight: normal;
-        }
-        @font-face {
-            font-family: 'IRANSans';
-            src: url('/fonts/iran_sans_bold.ttf') format('truetype');
-            font-weight: bold;
-        }
 
         * {
             margin: 0;
@@ -23,7 +15,7 @@
         }
 
         body {
-            font-family: 'IRANSans', 'Tahoma', 'Arial', sans-serif;
+            font-family: 'Vazirmatn', 'Tahoma', 'Arial', sans-serif;
             background: linear-gradient(180deg, #fff8f5 0%, #ffefeb 50%, #ffe5e0 100%);
             min-height: 100vh;
             color: #333;
@@ -126,16 +118,36 @@
         }
 
         /* لوگو سمت چپ */
-        .header-logo-circle {
+        .header-logo-section {
             position: absolute;
-            left: 60px;
+            left: 40px;
             top: 50%;
             transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-logo-circle {
+            position: relative;
             width: 120px;
             height: 120px;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .logo-bank-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.2);
+            padding: 6px 16px;
+            border-radius: 20px;
+            backdrop-filter: blur(5px);
+            white-space: nowrap;
         }
 
         .logo-circle-glow {
@@ -517,12 +529,15 @@
 
         /* Responsive */
         @media (max-width: 768px) {
-            .header-logo-circle {
+            .header-logo-section {
                 position: relative;
                 left: auto;
                 top: auto;
                 transform: none;
-                margin-bottom: 20px;
+                margin-bottom: 15px;
+            }
+
+            .header-logo-circle {
                 width: 100px;
                 height: 100px;
             }
@@ -533,7 +548,7 @@
             }
 
             .header-main-title {
-                font-size: 24px;
+                font-size: 22px;
             }
 
             .ring-1 { width: 110px; height: 110px; }
@@ -543,6 +558,10 @@
             .header-logo-image {
                 width: 70px;
                 height: 70px;
+            }
+
+            .logo-bank-name {
+                font-size: 12px;
             }
 
             .header-nav-bar {
@@ -570,18 +589,21 @@
             </div>
 
             <!-- لوگو سمت چپ -->
-            <div class="header-logo-circle">
-                <div class="logo-circle-glow"></div>
-                <div class="logo-rotating-ring ring-1"></div>
-                <div class="logo-rotating-ring ring-2"></div>
-                <div class="logo-rotating-ring ring-3"></div>
-                <div class="logo-particles">
-                    <span class="particle particle-1"></span>
-                    <span class="particle particle-2"></span>
-                    <span class="particle particle-3"></span>
-                    <span class="particle particle-4"></span>
+            <div class="header-logo-section">
+                <div class="header-logo-circle">
+                    <div class="logo-circle-glow"></div>
+                    <div class="logo-rotating-ring ring-1"></div>
+                    <div class="logo-rotating-ring ring-2"></div>
+                    <div class="logo-rotating-ring ring-3"></div>
+                    <div class="logo-particles">
+                        <span class="particle particle-1"></span>
+                        <span class="particle particle-2"></span>
+                        <span class="particle particle-3"></span>
+                        <span class="particle particle-4"></span>
+                    </div>
+                    <img src="{{ asset('logo.png') }}" alt="لوگو بانک ملی" class="header-logo-image">
                 </div>
-                <img src="{{ asset('logo.png') }}" alt="لوگو بانک ملی" class="header-logo-image">
+                <div class="logo-bank-name">بانک ملی ایران</div>
             </div>
         </div>
 
