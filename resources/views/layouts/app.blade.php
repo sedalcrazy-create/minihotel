@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'سیستم مدیریت خوابگاه - بانک ملی')</title>
     <style>
+        @font-face {
+            font-family: 'IRANSans';
+            src: url('/fonts/iran_sans.ttf') format('truetype');
+            font-weight: normal;
+        }
+        @font-face {
+            font-family: 'IRANSans';
+            src: url('/fonts/iran_sans_bold.ttf') format('truetype');
+            font-weight: bold;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -12,7 +23,7 @@
         }
 
         body {
-            font-family: 'Tahoma', 'Arial', sans-serif;
+            font-family: 'IRANSans', 'Tahoma', 'Arial', sans-serif;
             background: linear-gradient(180deg, #fff8f5 0%, #ffefeb 50%, #ffe5e0 100%);
             min-height: 100vh;
             color: #333;
