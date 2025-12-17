@@ -58,19 +58,39 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #f3debf 0%, #f96c08 50%, #e37415 100%);
+            background: linear-gradient(135deg, #f96c08 0%, #e37415 50%, #d66512 100%);
             color: white;
-            padding: 20px 0;
-            box-shadow: 0 4px 12px rgba(227, 116, 21, 0.3);
+            padding: 25px 0;
+            box-shadow: 0 8px 32px rgba(227, 116, 21, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 50%);
+            animation: header-shine 8s linear infinite;
+        }
+
+        @keyframes header-shine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .header-content {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            position: relative;
+            z-index: 10;
         }
 
         .header-logo {
@@ -81,8 +101,8 @@
 
         .header-logo-circle {
             position: relative;
-            width: 80px;
-            height: 80px;
+            width: 100px;
+            height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -111,16 +131,16 @@
         }
 
         .ring-1 {
-            width: 95px;
-            height: 95px;
+            width: 115px;
+            height: 115px;
             border-color: rgba(249, 108, 8, 0.6);
             border-style: dashed;
             animation-duration: 6s;
         }
 
         .ring-2 {
-            width: 110px;
-            height: 110px;
+            width: 130px;
+            height: 130px;
             border-color: rgba(227, 116, 21, 0.4);
             border-style: dotted;
             animation-duration: 10s;
@@ -128,8 +148,8 @@
         }
 
         .ring-3 {
-            width: 125px;
-            height: 125px;
+            width: 145px;
+            height: 145px;
             border-color: rgba(255, 246, 133, 0.5);
             border-style: solid;
             animation-duration: 14s;
@@ -187,38 +207,63 @@
         }
 
         .header-logo-image {
-            width: 55px;
-            height: 55px;
+            width: 75px;
+            height: 75px;
             object-fit: contain;
             position: relative;
             z-index: 10;
-            filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+            filter: drop-shadow(0 6px 20px rgba(0,0,0,0.3));
             animation: logo-float 3s ease-in-out infinite;
-            background: linear-gradient(135deg, #f96c08 0%, #e37415 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
             border-radius: 50%;
-            padding: 8px;
+            padding: 10px;
+            border: 3px solid rgba(255,255,255,0.8);
         }
 
         .logo-text {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            gap: 8px;
+        }
+
+        .logo-text-main {
+            font-size: 22px;
+            font-weight: bold;
+            color: #fff;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            letter-spacing: -0.5px;
         }
 
         .logo-text-bank {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255,255,255,0.15);
+            padding: 8px 16px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .logo-text-bank-name {
+            font-size: 16px;
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        }
+
+        .logo-text-bank-sub {
             font-size: 12px;
             color: rgba(255,255,255,0.9);
             font-weight: 500;
+            padding-right: 10px;
+            border-right: 2px solid rgba(255,255,255,0.3);
         }
 
         @keyframes logo-float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-5px); }
-        }
-
-        .header h1 {
-            font-size: 20px;
-            font-weight: bold;
         }
 
         .header-nav {
@@ -596,8 +641,11 @@
                     <img src="{{ asset('logo.png') }}" alt="لوگو بانک ملی" class="header-logo-image">
                 </div>
                 <div class="logo-text">
-                    <h1>سیستم مدیریت خوابگاه</h1>
-                    <span class="logo-text-bank">بانک ملی ایران - اداره کل آموزش</span>
+                    <h1 class="logo-text-main">سیستم مدیریت خوابگاه</h1>
+                    <div class="logo-text-bank">
+                        <span class="logo-text-bank-name">بانک ملی ایران</span>
+                        <span class="logo-text-bank-sub">اداره کل آموزش</span>
+                    </div>
                 </div>
             </div>
             <div class="header-nav">

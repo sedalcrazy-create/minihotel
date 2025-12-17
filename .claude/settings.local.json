@@ -37,7 +37,8 @@
       "Bash(\"F:/New folder/hotel/resources/views/\" )",
       "Bash(root@37.152.174.87:/var/www/hotel/resources/views/)",
       "Bash(\"F:/New folder/hotel/routes/web.php\" )",
-      "Bash(root@37.152.174.87:/var/www/hotel/routes/web.php)"
+      "Bash(root@37.152.174.87:/var/www/hotel/routes/web.php)",
+      "WebFetch(domain:ria.jafamhis.ir)"
     ]
   }
 }
