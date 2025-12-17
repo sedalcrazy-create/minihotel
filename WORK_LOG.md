@@ -223,4 +223,106 @@ docker exec hotel-app chown -R www-data:www-data /var/www/html/storage /var/www/
 
 ---
 
+## 11. بازطراحی هدر (2025-12-17)
+
+### تغییرات ظاهری:
+- حذف subtitle "بانک ملی ایران - اداره کل آموزش"
+- تغییر tagline به "اداره کل آموزش بانک ملی ایران"
+- حذف متن "بانک ملی ایران" زیر لوگو
+- استفاده از فونت Vazirmatn از CDN
+- لوگوی جدید از `https://ria.jafamhis.ir/assets/logo-bmi.png`
+- اندازه لوگو 140px (2 برابر قبلی)
+- حلقه‌های چرخان دور لوگو با انیمیشن
+
+### فایل‌های تغییر یافته:
+- `resources/views/layouts/app.blade.php`
+
+---
+
+## 12. مودال تعاملی تخت‌ها (2025-12-17)
+
+### قابلیت جدید:
+کلیک روی هر تخت در داشبورد → باز شدن مودال با گزینه‌های:
+- **تغییر وضعیت**: آزاد، اشغال، نظافت، تعمیر
+- **ثبت رزرو**: با تخت و اتاق از پیش انتخاب شده
+- **ثبت تعمیر**: با تخت از پیش انتخاب شده
+- **ثبت نظافت**: فرم سریع با تخت انتخاب شده
+
+### فایل‌های جدید:
+- `app/Http/Controllers/BedController.php`
+
+### فایل‌های تغییر یافته:
+- `resources/views/dashboard.blade.php` - اضافه شدن مودال و JavaScript
+- `routes/web.php` - اضافه شدن route برای تغییر وضعیت تخت
+- `app/Http/Controllers/ReservationController.php` - پشتیبانی از bed_id و room_id در URL
+- `resources/views/reservations/create.blade.php` - انتخاب خودکار تخت
+- `app/Http/Controllers/MaintenanceController.php` - پشتیبانی از bed_id در URL
+- `resources/views/maintenance/create.blade.php` - انتخاب خودکار تخت
+- `app/Http/Controllers/CleaningController.php` - پشتیبانی از bed_id در URL
+- `resources/views/cleaning/index.blade.php` - فرم سریع نظافت
+
+### Route جدید:
+```php
+Route::put('/beds/{bed}/status', [BedController::class, 'updateStatus'])->name('beds.update-status');
+```
+
+---
+
+## 13. رفع خطای ActivityLog (2025-12-17)
+
+### مشکل:
+خطای 500 در login/logout به دلیل مشکل نوشتن در دیتابیس SQLite
+
+### راه‌حل:
+اضافه کردن try-catch دور تمام فراخوانی‌های `ActivityLog::log()`:
+- `AuthController.php`
+- `CleaningController.php`
+- `MaintenanceController.php`
+
+---
+
+## 14. کامیت‌های جدید Git
+
+| Hash | توضیحات |
+|------|---------|
+| `38af46d` | Add pre-selection for maintenance and cleaning from dashboard |
+| `02671bc` | Fix ActivityLog errors in auth controller |
+| `d11438b` | Auto-select bed and room when creating reservation from dashboard |
+| `ea9d9ce` | Add interactive bed modal with status change and actions |
+| `0616d91` | Update header text |
+| `d1efa52` | Remove logo-bank-name text from header |
+
+---
+
+## 15. نکات مهم دیپلوی
+
+### مشکل رایج: vendor folder حذف می‌شود
+بعد از هر بار که دیتابیس یا فایل‌ها پاک شوند:
+```bash
+docker exec hotel-app composer install --no-dev --optimize-autoloader
+```
+
+### مشکل رایج: دیتابیس readonly
+```bash
+docker exec hotel-app chmod 666 /var/www/html/database/database.sqlite
+docker exec hotel-app chown www-data:www-data /var/www/html/database/database.sqlite
+```
+
+### دیپلوی سریع فایل‌های خاص:
+```bash
+# Pull از گیت
+cd /var/www/hotel && git pull origin master
+
+# کپی فایل‌های خاص
+docker cp /var/www/hotel/app/Http/Controllers/. hotel-app:/var/www/html/app/Http/Controllers/
+docker cp /var/www/hotel/resources/views/. hotel-app:/var/www/html/resources/views/
+docker cp /var/www/hotel/routes/web.php hotel-app:/var/www/html/routes/web.php
+
+# پاکسازی کش
+docker exec hotel-app php artisan view:clear
+docker exec hotel-app php artisan route:clear
+```
+
+---
+
 **ریپازیتوری گیت:** https://github.com/sedalcrazy-create/minihotel.git
