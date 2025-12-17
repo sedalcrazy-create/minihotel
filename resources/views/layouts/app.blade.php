@@ -138,18 +138,6 @@
             justify-content: center;
         }
 
-        .logo-bank-name {
-            font-size: 14px;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
-            background: rgba(0,0,0,0.2);
-            padding: 6px 16px;
-            border-radius: 20px;
-            backdrop-filter: blur(5px);
-            white-space: nowrap;
-        }
-
         .logo-circle-glow {
             position: absolute;
             width: 150%;
@@ -560,10 +548,6 @@
                 height: 70px;
             }
 
-            .logo-bank-name {
-                font-size: 12px;
-            }
-
             .header-nav-bar {
                 gap: 6px;
             }
@@ -603,7 +587,6 @@
                     </div>
                     <img src="{{ asset('logo.png') }}?v={{ time() }}" alt="لوگو بانک ملی" class="header-logo-image">
                 </div>
-                <div class="logo-bank-name">بانک ملی ایران</div>
             </div>
         </div>
 
