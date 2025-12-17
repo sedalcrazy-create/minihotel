@@ -24,12 +24,13 @@ class MaintenanceController extends Controller
         return view('maintenance.index', compact('requests'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $rooms = Room::with('unit')->get();
         $beds = Bed::with('room.unit')->get();
+        $selectedBedId = $request->get('bed_id');
 
-        return view('maintenance.create', compact('rooms', 'beds'));
+        return view('maintenance.create', compact('rooms', 'beds', 'selectedBedId'));
     }
 
     public function store(Request $request)
@@ -59,7 +60,9 @@ class MaintenanceController extends Controller
             Bed::where('id', $validated['bed_id'])->update(['status' => 'under_maintenance']);
         }
 
-        ActivityLog::log('create', 'MaintenanceRequest', $maintenance->id, 'درخواست تعمیر ثبت شد');
+        try {
+            ActivityLog::log('create', 'MaintenanceRequest', $maintenance->id, 'درخواست تعمیر ثبت شد');
+        } catch (\Exception $e) {}
 
         return redirect()->route('maintenance.index')
             ->with('success', 'درخواست تعمیر با موفقیت ثبت شد.');
@@ -96,7 +99,9 @@ class MaintenanceController extends Controller
             }
         }
 
-        ActivityLog::log('update', 'MaintenanceRequest', $maintenance->id, 'وضعیت تعمیر تغییر کرد');
+        try {
+            ActivityLog::log('update', 'MaintenanceRequest', $maintenance->id, 'وضعیت تعمیر تغییر کرد');
+        } catch (\Exception $e) {}
 
         return redirect()->route('maintenance.index')
             ->with('success', 'وضعیت تعمیر با موفقیت به‌روزرسانی شد.');
@@ -110,7 +115,9 @@ class MaintenanceController extends Controller
 
         $maintenance->update(['assigned_to' => $validated['assigned_to']]);
 
-        ActivityLog::log('update', 'MaintenanceRequest', $maintenance->id, 'تعمیرکار تخصیص داده شد');
+        try {
+            ActivityLog::log('update', 'MaintenanceRequest', $maintenance->id, 'تعمیرکار تخصیص داده شد');
+        } catch (\Exception $e) {}
 
         return redirect()->route('maintenance.index')
             ->with('success', 'تعمیرکار با موفقیت تخصیص داده شد.');

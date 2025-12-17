@@ -26,7 +26,9 @@
                 <select name="bed_id" class="form-control">
                     <option value="">انتخاب تخت...</option>
                     @foreach($beds as $bed)
-                        <option value="{{ $bed->id }}">واحد {{ $bed->room->unit->number }} - اتاق {{ $bed->room->number }} - تخت {{ $bed->number }}</option>
+                        <option value="{{ $bed->id }}" {{ (isset($selectedBedId) && $selectedBedId == $bed->id) ? 'selected' : '' }}>
+                            واحد {{ $bed->room->unit->number }} - اتاق {{ $bed->room->number }} - تخت {{ $bed->number }}
+                        </option>
                     @endforeach
                 </select>
             </div>

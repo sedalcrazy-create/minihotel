@@ -20,7 +20,14 @@ class CleaningController extends Controller
 
         $logs = $query->orderBy('cleaned_at', 'desc')->paginate(20);
 
-        return view('cleaning.index', compact('logs'));
+        // Pre-selected bed from dashboard
+        $selectedBedId = $request->get('bed_id');
+        $selectedBed = null;
+        if ($selectedBedId) {
+            $selectedBed = Bed::with('room.unit')->find($selectedBedId);
+        }
+
+        return view('cleaning.index', compact('logs', 'selectedBed', 'selectedBedId'));
     }
 
     public function pending()
@@ -66,9 +73,11 @@ class CleaningController extends Controller
                 ->update(['status' => 'available']);
         }
 
-        ActivityLog::log('create', 'CleaningLog', $log->id, 'نظافت ثبت شد');
+        try {
+            ActivityLog::log('create', 'CleaningLog', $log->id, 'نظافت ثبت شد');
+        } catch (\Exception $e) {}
 
-        return redirect()->route('cleaning.pending')
+        return redirect()->route('cleaning.index')
             ->with('success', 'نظافت با موفقیت ثبت شد.');
     }
 }

@@ -3,6 +3,50 @@
 @section('title', 'سوابق نظافت')
 
 @section('content')
+
+@if(isset($selectedBed) && $selectedBed)
+<div class="card" style="margin-bottom: 20px; border: 2px solid #10b981;">
+    <div class="card-header" style="background: linear-gradient(135deg, #10b981, #059669); color: white;">
+        <h3 style="margin: 0;">ثبت نظافت برای تخت انتخاب شده</h3>
+    </div>
+    <div class="card-body" style="padding: 20px;">
+        <div style="background: #d1fae5; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+            <strong>تخت:</strong> واحد {{ $selectedBed->room->unit->number }} - اتاق {{ $selectedBed->room->number }} - تخت {{ $selectedBed->number }}
+            <span style="margin-right: 20px; padding: 4px 12px; border-radius: 12px; font-size: 12px; background:
+                {{ $selectedBed->status == 'available' ? '#10b981' : ($selectedBed->status == 'needs_cleaning' ? '#f59e0b' : '#6b7280') }}; color: white;">
+                {{ $selectedBed->status == 'available' ? 'آزاد' : ($selectedBed->status == 'needs_cleaning' ? 'نیاز به نظافت' : $selectedBed->status) }}
+            </span>
+        </div>
+
+        <form method="POST" action="{{ route('cleaning.store') }}">
+            @csrf
+            <input type="hidden" name="bed_id" value="{{ $selectedBed->id }}">
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label for="type">نوع نظافت *</label>
+                    <select name="type" id="type" class="form-control" required>
+                        <option value="daily">روزانه</option>
+                        <option value="weekly">هفتگی</option>
+                        <option value="deep">عمیق</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">یادداشت</label>
+                    <input type="text" name="notes" id="notes" class="form-control" placeholder="توضیحات...">
+                </div>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <button type="submit" class="btn btn-success">✓ ثبت نظافت</button>
+                <a href="{{ route('cleaning.index') }}" class="btn btn-secondary">انصراف</a>
+            </div>
+        </form>
+    </div>
+</div>
+@endif
+
 <div class="card">
     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
         <h2>سوابق نظافت</h2>
