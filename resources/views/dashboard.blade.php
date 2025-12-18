@@ -69,10 +69,19 @@
                                         'under_maintenance' => '#6b7280',
                                         default => '#e5e7eb'
                                     };
+                                    $statusLabel = match($bed->status) {
+                                        'available' => 'آزاد',
+                                        'occupied' => 'اشغال',
+                                        'needs_cleaning' => 'نیاز به نظافت',
+                                        'under_maintenance' => 'در تعمیر',
+                                        default => 'نامشخص'
+                                    };
                                 @endphp
                                 <div
-                                    style="background: {{ $color }}; color: white; padding: 8px; border-radius: 5px; text-align: center; font-size: 11px; cursor: pointer;"
-                                    title="{{ $bed->identifier }} - {{ $bed->status }}"
+                                    class="bed-card"
+                                    style="background: {{ $color }}; color: white; padding: 8px; border-radius: 5px; text-align: center; font-size: 11px; cursor: pointer; transition: all 0.2s;"
+                                    title="{{ $bed->identifier }} - {{ $statusLabel }}"
+                                    onclick="openBedModal({{ $bed->id }}, '{{ $bed->identifier }}', '{{ $bed->status }}', '{{ $statusLabel }}', {{ $unit->id }}, {{ $room->id }})"
                                 >
                                     تخت {{ $bed->number }}
                                 </div>
@@ -153,4 +162,119 @@
     </table>
 </div>
 @endif
+
+<!-- مودال تخت -->
+<div id="bedModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 16px; width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+        <!-- هدر مودال -->
+        <div style="background: linear-gradient(135deg, #f96c08, #e37415); color: white; padding: 20px; border-radius: 16px 16px 0 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 id="modalTitle" style="margin: 0; font-size: 18px;">اطلاعات تخت</h3>
+                <button onclick="closeBedModal()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; font-size: 18px;">×</button>
+            </div>
+            <div id="modalStatus" style="margin-top: 10px; padding: 6px 12px; background: rgba(255,255,255,0.2); border-radius: 20px; display: inline-block; font-size: 13px;"></div>
+        </div>
+
+        <!-- محتوای مودال -->
+        <div style="padding: 20px;">
+            <!-- تغییر وضعیت -->
+            <div style="margin-bottom: 20px;">
+                <label style="font-weight: bold; display: block; margin-bottom: 10px; color: #374151;">تغییر وضعیت:</label>
+                <form id="statusForm" method="POST" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    @csrf
+                    @method('PUT')
+                    <button type="submit" name="status" value="available" class="status-btn" style="flex: 1; min-width: 80px; padding: 10px; border: 2px solid #10b981; background: #d1fae5; color: #065f46; border-radius: 8px; cursor: pointer; font-size: 12px;">🟢 آزاد</button>
+                    <button type="submit" name="status" value="occupied" class="status-btn" style="flex: 1; min-width: 80px; padding: 10px; border: 2px solid #ef4444; background: #fee2e2; color: #991b1b; border-radius: 8px; cursor: pointer; font-size: 12px;">🔴 اشغال</button>
+                    <button type="submit" name="status" value="needs_cleaning" class="status-btn" style="flex: 1; min-width: 80px; padding: 10px; border: 2px solid #f59e0b; background: #fef3c7; color: #92400e; border-radius: 8px; cursor: pointer; font-size: 12px;">🟡 نظافت</button>
+                    <button type="submit" name="status" value="under_maintenance" class="status-btn" style="flex: 1; min-width: 80px; padding: 10px; border: 2px solid #6b7280; background: #e5e7eb; color: #374151; border-radius: 8px; cursor: pointer; font-size: 12px;">⚫ تعمیر</button>
+                </form>
+            </div>
+
+            <!-- دکمه‌های عملیات -->
+            <div style="border-top: 1px solid #e5e7eb; padding-top: 20px;">
+                <label style="font-weight: bold; display: block; margin-bottom: 10px; color: #374151;">عملیات:</label>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <a id="reserveBtn" href="#" class="btn btn-primary" style="text-align: center; padding: 12px;">
+                        📅 ثبت رزرو جدید
+                    </a>
+                    <a id="maintenanceBtn" href="#" class="btn btn-secondary" style="text-align: center; padding: 12px;">
+                        🔧 ثبت درخواست تعمیر
+                    </a>
+                    <a id="cleaningBtn" href="#" class="btn btn-success" style="text-align: center; padding: 12px;">
+                        🧹 ثبت نظافت
+                    </a>
+                </div>
+            </div>
+
+            <!-- نمایش رزرو فعال -->
+            <div id="activeReservationSection" style="display: none; border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 20px;">
+                <label style="font-weight: bold; display: block; margin-bottom: 10px; color: #374151;">رزرو فعال:</label>
+                <div id="activeReservationInfo" style="background: #fef3c7; padding: 15px; border-radius: 8px; font-size: 13px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bed-card:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 10;
+    position: relative;
+}
+.status-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+</style>
+
+<script>
+let currentBedId = null;
+let currentRoomId = null;
+
+function openBedModal(bedId, identifier, status, statusLabel, unitId, roomId) {
+    currentBedId = bedId;
+    currentRoomId = roomId;
+
+    document.getElementById('modalTitle').textContent = identifier;
+    document.getElementById('modalStatus').textContent = 'وضعیت: ' + statusLabel;
+
+    // تنظیم فرم تغییر وضعیت
+    document.getElementById('statusForm').action = '/beds/' + bedId + '/status';
+
+    // تنظیم لینک‌ها
+    document.getElementById('reserveBtn').href = '/reservations/create?bed_id=' + bedId + '&room_id=' + roomId;
+    document.getElementById('maintenanceBtn').href = '/maintenance/create?bed_id=' + bedId;
+    document.getElementById('cleaningBtn').href = '/cleaning?bed_id=' + bedId;
+
+    // نمایش مودال
+    document.getElementById('bedModal').style.display = 'flex';
+
+    // غیرفعال کردن دکمه وضعیت فعلی
+    document.querySelectorAll('.status-btn').forEach(btn => {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+    });
+    document.querySelector('.status-btn[value="' + status + '"]').disabled = true;
+    document.querySelector('.status-btn[value="' + status + '"]').style.opacity = '0.5';
+}
+
+function closeBedModal() {
+    document.getElementById('bedModal').style.display = 'none';
+}
+
+// بستن مودال با کلیک خارج از آن
+document.getElementById('bedModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeBedModal();
+    }
+});
+
+// بستن با کلید Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeBedModal();
+    }
+});
+</script>
 @endsection

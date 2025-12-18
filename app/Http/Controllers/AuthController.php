@@ -23,7 +23,11 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
 
-            ActivityLog::log('login', 'User', auth()->id(), 'کاربر وارد سیستم شد');
+            try {
+                ActivityLog::log('login', 'User', auth()->id(), 'کاربر وارد سیستم شد');
+            } catch (\Exception $e) {
+                // Ignore activity log errors
+            }
 
             return redirect()->intended('/dashboard');
         }
@@ -35,7 +39,11 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        ActivityLog::log('logout', 'User', auth()->id(), 'کاربر از سیستم خارج شد');
+        try {
+            ActivityLog::log('logout', 'User', auth()->id(), 'کاربر از سیستم خارج شد');
+        } catch (\Exception $e) {
+            // Ignore activity log errors
+        }
 
         Auth::logout();
         $request->session()->invalidate();

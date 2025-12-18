@@ -28,6 +28,9 @@
 
         <div>
             @if($reservation->status === 'pending' || $reservation->status === 'confirmed')
+                <a href="{{ route('reservations.edit', $reservation) }}" class="btn btn-primary">
+                    ویرایش
+                </a>
                 <form action="{{ route('reservations.check-in', $reservation) }}" method="POST" style="display: inline;">
                     @csrf
                     <button type="submit" class="btn btn-success" onclick="return confirm('آیا از چک‌این این رزرو مطمئن هستید؟')">

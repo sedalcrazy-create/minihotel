@@ -23,13 +23,23 @@ class ReservationController extends Controller
         return view('reservations.index', compact('reservations'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $admissionTypes = AdmissionType::where('is_active', true)->get();
         $personnel = Personnel::where('is_active', true)->orderBy('first_name')->get();
-        $rooms = Room::with('unit')->where('is_active', true)->get();
+        $rooms = Room::with(['unit', 'beds'])->where('is_active', true)->get();
 
-        return view('reservations.create', compact('admissionTypes', 'personnel', 'rooms'));
+        // Pre-selected bed and room from dashboard
+        $selectedBedId = $request->get('bed_id');
+        $selectedRoomId = $request->get('room_id');
+
+        // If bed_id is provided but room_id is not, find the room
+        if ($selectedBedId && !$selectedRoomId) {
+            $bed = Bed::find($selectedBedId);
+            $selectedRoomId = $bed ? $bed->room_id : null;
+        }
+
+        return view('reservations.create', compact('admissionTypes', 'personnel', 'rooms', 'selectedBedId', 'selectedRoomId'));
     }
 
     public function store(Request $request)
@@ -92,6 +102,76 @@ class ReservationController extends Controller
         $reservation->load(['admissionType', 'personnel', 'guest', 'room.unit', 'beds', 'meals', 'creator']);
 
         return view('reservations.show', compact('reservation'));
+    }
+
+    public function edit(Reservation $reservation)
+    {
+        $admissionTypes = AdmissionType::where('is_active', true)->get();
+        $personnel = Personnel::where('is_active', true)->orderBy('first_name')->get();
+        $rooms = Room::with('unit')->where('is_active', true)->get();
+        $reservation->load(['beds', 'room.beds']);
+
+        return view('reservations.edit', compact('reservation', 'admissionTypes', 'personnel', 'rooms'));
+    }
+
+    public function update(Request $request, Reservation $reservation)
+    {
+        $validated = $request->validate([
+            'admission_type_id' => 'required|exists:admission_types,id',
+            'personnel_id' => 'nullable|exists:personnel,id',
+            'guest_name' => 'required_without:personnel_id|string',
+            'guest_phone' => 'nullable|string',
+            'room_id' => 'required|exists:rooms,id',
+            'bed_ids' => 'required|array|min:1',
+            'bed_ids.*' => 'exists:beds,id',
+            'check_in_date' => 'required|date',
+            'check_out_date' => 'required|date|after:check_in_date',
+            'notes' => 'nullable|string',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            // Update or create guest if needed
+            if (!$request->personnel_id && $request->guest_name) {
+                if ($reservation->guest_id) {
+                    $reservation->guest->update([
+                        'full_name' => $request->guest_name,
+                        'phone' => $request->guest_phone,
+                    ]);
+                } else {
+                    $guest = Guest::create([
+                        'full_name' => $request->guest_name,
+                        'phone' => $request->guest_phone,
+                    ]);
+                    $validated['guest_id'] = $guest->id;
+                }
+            }
+
+            // Update reservation
+            $reservation->update([
+                'admission_type_id' => $validated['admission_type_id'],
+                'personnel_id' => $validated['personnel_id'] ?? null,
+                'guest_id' => $validated['guest_id'] ?? $reservation->guest_id,
+                'room_id' => $validated['room_id'],
+                'check_in_date' => $validated['check_in_date'],
+                'check_out_date' => $validated['check_out_date'],
+                'notes' => $validated['notes'] ?? null,
+            ]);
+
+            // Sync beds
+            $reservation->beds()->sync($validated['bed_ids']);
+
+            ActivityLog::log('update', 'Reservation', $reservation->id, 'رزرو ویرایش شد');
+
+            DB::commit();
+
+            return redirect()->route('reservations.show', $reservation)
+                ->with('success', 'رزرو با موفقیت ویرایش شد.');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back()->with('error', 'خطا در ویرایش رزرو: ' . $e->getMessage());
+        }
     }
 
     public function checkIn(Reservation $reservation)

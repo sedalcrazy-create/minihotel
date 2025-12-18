@@ -1,26 +1,25 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', 'رزرو جدید'); ?>
 
-@section('title', 'رزرو جدید')
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
     <h2>رزرو جدید</h2>
-    <a href="{{ route('reservations.index') }}" class="btn btn-secondary">بازگشت</a>
+    <a href="<?php echo e(route('reservations.index')); ?>" class="btn btn-secondary">بازگشت</a>
 </div>
 
 <div class="card">
-    <form method="POST" action="{{ route('reservations.store') }}" id="reservationForm">
-        @csrf
+    <form method="POST" action="<?php echo e(route('reservations.store')); ?>" id="reservationForm">
+        <?php echo csrf_field(); ?>
 
         <div class="form-group">
             <label for="admission_type_id">نوع پذیرش *</label>
             <select name="admission_type_id" id="admission_type_id" class="form-control" required>
                 <option value="">انتخاب کنید...</option>
-                @foreach($admissionTypes as $type)
-                    <option value="{{ $type->id }}" {{ old('admission_type_id') == $type->id ? 'selected' : '' }}>
-                        {{ $type->name }}
+                <?php $__currentLoopData = $admissionTypes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $type): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <option value="<?php echo e($type->id); ?>" <?php echo e(old('admission_type_id') == $type->id ? 'selected' : ''); ?>>
+                        <?php echo e($type->name); ?>
+
                     </option>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </select>
         </div>
 
@@ -43,11 +42,11 @@
                     <label for="personnel_id">انتخاب پرسنل</label>
                     <select name="personnel_id" id="personnel_id" class="form-control">
                         <option value="">انتخاب کنید...</option>
-                        @foreach($personnel as $person)
-                            <option value="{{ $person->id }}" {{ old('personnel_id') == $person->id ? 'selected' : '' }}>
-                                {{ $person->full_name }} ({{ $person->employment_code }})
+                        <?php $__currentLoopData = $personnel; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $person): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($person->id); ?>" <?php echo e(old('personnel_id') == $person->id ? 'selected' : ''); ?>>
+                                <?php echo e($person->full_name); ?> (<?php echo e($person->employment_code); ?>)
                             </option>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
             </div>
@@ -55,12 +54,12 @@
             <div id="externalSection" style="display: none;">
                 <div class="form-group">
                     <label for="guest_name">نام و نام خانوادگی مهمان</label>
-                    <input type="text" name="guest_name" id="guest_name" class="form-control" value="{{ old('guest_name') }}" placeholder="علی احمدی">
+                    <input type="text" name="guest_name" id="guest_name" class="form-control" value="<?php echo e(old('guest_name')); ?>" placeholder="علی احمدی">
                 </div>
 
                 <div class="form-group">
                     <label for="guest_phone">شماره تماس</label>
-                    <input type="text" name="guest_phone" id="guest_phone" class="form-control" value="{{ old('guest_phone') }}" placeholder="09121234567">
+                    <input type="text" name="guest_phone" id="guest_phone" class="form-control" value="<?php echo e(old('guest_phone')); ?>" placeholder="09121234567">
                 </div>
             </div>
         </div>
@@ -69,16 +68,13 @@
             <label for="room_id">انتخاب اتاق *</label>
             <select name="room_id" id="room_id" class="form-control" required>
                 <option value="">ابتدا اتاق را انتخاب کنید...</option>
-                @foreach($rooms as $room)
-                    <option value="{{ $room->id }}" data-beds="{{ json_encode($room->beds) }}" {{ (old('room_id') == $room->id || (isset($selectedRoomId) && $selectedRoomId == $room->id)) ? 'selected' : '' }}>
-                        واحد {{ $room->unit->number }} - اتاق {{ $room->number }} ({{ $room->unit->section == 'east' ? 'شرقی' : 'غربی' }})
+                <?php $__currentLoopData = $rooms; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $room): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <option value="<?php echo e($room->id); ?>" data-beds="<?php echo e(json_encode($room->beds)); ?>" <?php echo e(old('room_id') == $room->id ? 'selected' : ''); ?>>
+                        واحد <?php echo e($room->unit->number); ?> - اتاق <?php echo e($room->number); ?> (<?php echo e($room->unit->section == 'east' ? 'شرقی' : 'غربی'); ?>)
                     </option>
-                @endforeach
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
             </select>
         </div>
-
-        <!-- تخت از پیش انتخاب شده -->
-        <input type="hidden" id="preSelectedBedId" value="{{ $selectedBedId ?? '' }}">
 
         <div class="form-group" id="bedsSection" style="display: none;">
             <label>انتخاب تخت‌ها * (حداقل 1 تخت)</label>
@@ -90,23 +86,23 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="form-group">
                 <label for="check_in_date">تاریخ ورود *</label>
-                <input type="date" name="check_in_date" id="check_in_date" class="form-control" value="{{ old('check_in_date') }}" required>
+                <input type="date" name="check_in_date" id="check_in_date" class="form-control" value="<?php echo e(old('check_in_date')); ?>" required>
             </div>
 
             <div class="form-group">
                 <label for="check_out_date">تاریخ خروج *</label>
-                <input type="date" name="check_out_date" id="check_out_date" class="form-control" value="{{ old('check_out_date') }}" required>
+                <input type="date" name="check_out_date" id="check_out_date" class="form-control" value="<?php echo e(old('check_out_date')); ?>" required>
             </div>
         </div>
 
         <div class="form-group">
             <label for="notes">یادداشت</label>
-            <textarea name="notes" id="notes" class="form-control" rows="3" placeholder="توضیحات اضافی...">{{ old('notes') }}</textarea>
+            <textarea name="notes" id="notes" class="form-control" rows="3" placeholder="توضیحات اضافی..."><?php echo e(old('notes')); ?></textarea>
         </div>
 
         <div style="text-align: left;">
             <button type="submit" class="btn btn-success">ثبت رزرو</button>
-            <a href="{{ route('reservations.index') }}" class="btn btn-secondary">انصراف</a>
+            <a href="<?php echo e(route('reservations.index')); ?>" class="btn btn-secondary">انصراف</a>
         </div>
     </form>
 </div>
@@ -122,7 +118,6 @@
         const roomSelect = document.getElementById('room_id');
         const bedsSection = document.getElementById('bedsSection');
         const bedsList = document.getElementById('bedsList');
-        const preSelectedBedId = document.getElementById('preSelectedBedId').value;
 
         // Toggle guest type sections
         function updateGuestSections() {
@@ -143,8 +138,8 @@
         externalRadio.addEventListener('change', updateGuestSections);
 
         // Load beds when room is selected
-        function loadBeds() {
-            const selectedOption = roomSelect.options[roomSelect.selectedIndex];
+        roomSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
 
             if (!selectedOption.value) {
                 bedsSection.style.display = 'none';
@@ -164,24 +159,22 @@
                 }[bed.status] || '#e5e7eb';
 
                 const isAvailable = bed.status === 'available';
-                const isPreSelected = preSelectedBedId && bed.id == preSelectedBedId;
 
                 const bedDiv = document.createElement('div');
                 bedDiv.style.cssText = `
-                    border: 2px solid ${isPreSelected ? '#3b82f6' : bedColor};
+                    border: 2px solid ${bedColor};
                     border-radius: 8px;
                     padding: 15px;
                     text-align: center;
                     cursor: ${isAvailable ? 'pointer' : 'not-allowed'};
                     opacity: ${isAvailable ? '1' : '0.5'};
                     transition: all 0.3s;
-                    background: ${isPreSelected ? '#e0f2fe' : 'white'};
+                    background: white;
                 `;
 
                 bedDiv.innerHTML = `
                     <input type="checkbox" name="bed_ids[]" value="${bed.id}" id="bed_${bed.id}"
                         ${!isAvailable ? 'disabled' : ''}
-                        ${isPreSelected && isAvailable ? 'checked' : ''}
                         style="margin-bottom: 5px;">
                     <label for="bed_${bed.id}" style="display: block; cursor: ${isAvailable ? 'pointer' : 'not-allowed'};">
                         <div style="font-weight: bold;">تخت ${bed.number}</div>
@@ -209,9 +202,7 @@
             });
 
             bedsSection.style.display = 'block';
-        }
-
-        roomSelect.addEventListener('change', loadBeds);
+        });
 
         function updateBedSelection(bedDiv, isChecked) {
             if (isChecked) {
@@ -219,14 +210,18 @@
                 bedDiv.style.borderColor = '#3b82f6';
             } else {
                 bedDiv.style.background = 'white';
-                bedDiv.style.borderColor = '#10b981';
+                const checkbox = bedDiv.querySelector('input');
+                const bedColor = {
+                    'available': '#10b981',
+                    'occupied': '#ef4444',
+                    'needs_cleaning': '#f59e0b',
+                    'under_maintenance': '#6b7280'
+                }[checkbox.dataset.status] || '#10b981';
+                bedDiv.style.borderColor = bedColor;
             }
-        }
-
-        // اگر اتاق از قبل انتخاب شده، تخت‌ها را بارگذاری کن
-        if (roomSelect.value) {
-            loadBeds();
         }
     });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /var/www/html/resources/views/reservations/create.blade.php ENDPATH**/ ?>
