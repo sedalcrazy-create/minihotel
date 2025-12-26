@@ -637,5 +637,39 @@
 
         @yield('content')
     </div>
+    <!-- Persian Datepicker -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/persian-datepicker@1.2.0/dist/css/persian-datepicker.min.css"/>
+    <script src="https://unpkg.com/persian-datepicker@1.2.0/dist/js/persian-datepicker.min.js"></script>
+    <script src="https://unpkg.com/persian-date@1.1.0/dist/persian-date.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            // تنظیم تقویم شمسی برای تمام inputهای تاریخ
+            $(".jalali-datepicker").persianDatepicker({
+                format: "YYYY/MM/DD",
+                autoClose: true,
+                initialValue: false,
+                observer: true,
+                calendar: {
+                    persian: {
+                        locale: "fa"
+                    }
+                },
+                navigator: {
+                    enabled: true
+                },
+                toolbox: {
+                    enabled: true,
+                    calendarSwitch: {
+                        enabled: false
+                    }
+                },
+                onSelect: function(timestamp) {
+                    console.log("Selected:", timestamp);
+                }
+            });
+        });
+    </script>
 </body>
 </html>

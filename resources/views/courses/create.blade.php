@@ -25,12 +25,12 @@
 
             <div class="form-group">
                 <label for="start_date">تاریخ شروع *</label>
-                <input type="date" name="start_date" id="start_date" class="form-control" value="{{ old('start_date') }}" required>
+                <input type="text" name="start_date" class="jalali-datepicker" id="start_date" class="form-control" value="{{ old('start_date') }}" required>
             </div>
 
             <div class="form-group">
                 <label for="end_date">تاریخ پایان *</label>
-                <input type="date" name="end_date" id="end_date" class="form-control" value="{{ old('end_date') }}" required>
+                <input type="text" name="end_date" class="jalali-datepicker" id="end_date" class="form-control" value="{{ old('end_date') }}" required>
             </div>
 
             <div class="form-group">

@@ -25,6 +25,14 @@ class CourseController extends Controller
 
     public function store(Request $request)
     {
+        // تبدیل تاریخ شمسی به میلادی
+        if (\->start_date) {
+            \->merge(['start_date' => verta()->parse(\->start_date)->datetime()->format('Y-m-d')]);
+        }
+        if (\->end_date) {
+            \->merge(['end_date' => verta()->parse(\->end_date)->datetime()->format('Y-m-d')]);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:200',
             'code' => 'required|string|max:50|unique:courses',
@@ -67,6 +75,14 @@ class CourseController extends Controller
 
     public function update(Request $request, Course $course)
     {
+        // تبدیل تاریخ شمسی به میلادی
+        if (\->start_date) {
+            \->merge(['start_date' => verta()->parse(\->start_date)->datetime()->format('Y-m-d')]);
+        }
+        if (\->end_date) {
+            \->merge(['end_date' => verta()->parse(\->end_date)->datetime()->format('Y-m-d')]);
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:200',
             'code' => 'required|string|max:50|unique:courses,code,' . $course->id,
