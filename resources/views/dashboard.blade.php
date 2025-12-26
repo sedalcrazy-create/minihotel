@@ -51,6 +51,9 @@
         @foreach($units as $unit)
             <div style="border: 2px solid {{ $unit->gender_restriction == 'female' ? '#ff69b4' : ($unit->gender_restriction == 'male' ? '#4a90d9' : '#e5e7eb') }}; border-radius: 8px; padding: 15px; background: {{ $unit->gender_restriction == 'female' ? 'linear-gradient(135deg, #fff0f5, #ffe4ec)' : ($unit->gender_restriction == 'male' ? 'linear-gradient(135deg, #f0f8ff, #e6f2ff)' : '#f9fafb') }}; position: relative; overflow: hidden;">
                 @if($unit->gender_restriction == 'female')
+                <!-- Kawaii decorations -->
+                <div style="position: absolute; top: 8px; right: 8px; font-size: 16px; opacity: 0.6; animation: float 3s ease-in-out infinite;">🌸</div>
+                <div style="position: absolute; bottom: 55px; right: 8px; font-size: 14px; opacity: 0.5; animation: float 2.5s ease-in-out infinite 1s;">✨</div>
                 <img src="/images/kawaii-sleep.gif" alt="kawaii" style="position: absolute; bottom: 5px; left: 5px; width: 60px; height: auto; opacity: 0.6; pointer-events: none;">
                 @endif
                 <div style="font-weight: bold; margin-bottom: 10px; color: {{ $unit->gender_restriction == 'female' ? '#d63384' : ($unit->gender_restriction == 'male' ? '#1e3a8a' : '#1e3a8a') }};">
@@ -236,6 +239,22 @@
 .status-btn:hover {
     transform: scale(1.05);
     box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes sparkle {
+    0%, 100% { opacity: 0.3; transform: scale(1) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1.2) rotate(180deg); }
 }
 </style>
 
