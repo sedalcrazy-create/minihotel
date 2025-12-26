@@ -161,16 +161,16 @@
         }
 
         .ring-1 {
-            width: 200px;
-            height: 200px;
+            width: 150px;
+            height: 150px;
             border-color: rgba(255, 246, 133, 0.8);
             border-style: dashed;
             animation-duration: 6s;
         }
 
         .ring-2 {
-            width: 230px;
-            height: 230px;
+            width: 170px;
+            height: 170px;
             border-color: rgba(255, 255, 255, 0.5);
             border-style: dotted;
             animation-duration: 10s;
@@ -178,8 +178,8 @@
         }
 
         .ring-3 {
-            width: 260px;
-            height: 260px;
+            width: 190px;
+            height: 190px;
             border-color: rgba(249, 108, 8, 0.4);
             border-style: solid;
             animation-duration: 14s;
