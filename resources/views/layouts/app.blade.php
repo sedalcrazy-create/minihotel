@@ -584,7 +584,7 @@
                         <span class="particle particle-3"></span>
                         <span class="particle particle-4"></span>
                     </div>
-                    <img src="{{ asset('logo.png') }}?v={{ time() }}" alt="لوگو بانک ملی" class="header-logo-image">
+                    <img src="https://miniapp.darmanjoo.ir/assets/logo-bmi.png" alt="لوگو بانک ملی" class="header-logo-image">
                 </div>
             </div>
         </div>
@@ -595,6 +595,8 @@
             <a href="{{ route('personnel.index') }}">👥 پرسنل</a>
             <a href="{{ route('guests.index') }}">🧑‍💼 مهمان‌ها</a>
             <a href="{{ route('reservations.index') }}">📅 رزروها</a>
+            <a href="{{ route('courses.index') }}">📚 دوره‌ها</a>
+            <a href="{{ route('conferences.index') }}">🎤 همایش‌ها</a>
             <a href="{{ route('meals.index') }}">🍽️ وعده غذایی</a>
             <a href="{{ route('cleaning.index') }}">🧹 نظافت</a>
             <a href="{{ route('maintenance.index') }}">🔧 تعمیرات</a>

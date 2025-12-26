@@ -41,17 +41,28 @@
             <span style="display: inline-block; width: 15px; height: 15px; background: #ef4444; margin-right: 10px; margin-left: 5px; border-radius: 3px;"></span> اشغال
             <span style="display: inline-block; width: 15px; height: 15px; background: #f59e0b; margin-right: 10px; margin-left: 5px; border-radius: 3px;"></span> نظافت
             <span style="display: inline-block; width: 15px; height: 15px; background: #6b7280; margin-right: 10px; margin-left: 5px; border-radius: 3px;"></span> تعمیر
+            <span style="margin-right: 15px;">|</span>
+            <span style="display: inline-block; width: 15px; height: 15px; background: #ff69b4; margin-left: 5px; border-radius: 3px;"></span> خانم‌ها
+            <span style="display: inline-block; width: 15px; height: 15px; background: #4a90d9; margin-right: 10px; margin-left: 5px; border-radius: 3px;"></span> آقایان
         </div>
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">
         @foreach($units as $unit)
-            <div style="border: 2px solid #e5e7eb; border-radius: 8px; padding: 15px; background: #f9fafb;">
-                <div style="font-weight: bold; margin-bottom: 10px; color: #1e3a8a;">
+            <div style="border: 2px solid {{ $unit->gender_restriction == 'female' ? '#ff69b4' : ($unit->gender_restriction == 'male' ? '#4a90d9' : '#e5e7eb') }}; border-radius: 8px; padding: 15px; background: {{ $unit->gender_restriction == 'female' ? 'linear-gradient(135deg, #fff0f5, #ffe4ec)' : ($unit->gender_restriction == 'male' ? 'linear-gradient(135deg, #f0f8ff, #e6f2ff)' : '#f9fafb') }}; position: relative; overflow: hidden;">
+                @if($unit->gender_restriction == 'female')
+                <img src="/images/kawaii-sleep.gif" alt="kawaii" style="position: absolute; bottom: 5px; left: 5px; width: 60px; height: auto; opacity: 0.6; pointer-events: none;">
+                @endif
+                <div style="font-weight: bold; margin-bottom: 10px; color: {{ $unit->gender_restriction == 'female' ? '#d63384' : ($unit->gender_restriction == 'male' ? '#1e3a8a' : '#1e3a8a') }};">
                     واحد {{ $unit->number }}
                     <span style="font-size: 11px; font-weight: normal; color: #6b7280;">
                         ({{ $unit->section == 'east' ? 'شرقی' : 'غربی' }})
                     </span>
+                    @if($unit->gender_restriction != 'mixed')
+                    <span style="font-size: 10px; padding: 2px 8px; border-radius: 10px; margin-right: 5px; background: {{ $unit->gender_restriction == 'female' ? '#ff69b4' : '#4a90d9' }}; color: white;">
+                        {{ $unit->gender_restriction == 'female' ? 'خانم‌ها' : 'آقایان' }}
+                    </span>
+                    @endif
                 </div>
 
                 @foreach($unit->rooms as $room)

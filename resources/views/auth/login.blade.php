@@ -32,7 +32,7 @@
 <div class="login-box">
     <div style="padding: 0 30px;">
         <div class="login-logo">
-            <img src="{{ asset('logo.png') }}" alt="بانک ملی ایران">
+            <img src="https://miniapp.darmanjoo.ir/assets/logo-bmi.png" alt="بانک ملی ایران">
         </div>
         <div class="card-header text-center" style="border: none; padding: 0; margin-bottom: 30px;">
             <h2 style="font-size: 18px; margin-bottom: 8px;">ورود به سیستم</h2>

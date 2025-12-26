@@ -10,6 +10,8 @@ use App\Http\Controllers\CleaningController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\BedController;
+use App\Http\Controllers\CourseController;
+use App\Http\Controllers\ConferenceController;
 
 // Redirect root to dashboard
 Route::get('/', function () {
@@ -39,6 +41,14 @@ Route::middleware('auth')->group(function () {
 
     // Guests
     Route::resource('guests', GuestController::class);
+
+    // Courses (دوره‌ها)
+    Route::resource('courses', CourseController::class);
+    Route::get('/api/courses/upcoming', [CourseController::class, 'upcoming'])->name('courses.upcoming');
+
+    // Conferences (همایش‌ها)
+    Route::resource('conferences', ConferenceController::class);
+    Route::get('/api/conferences/upcoming', [ConferenceController::class, 'upcoming'])->name('conferences.upcoming');
 
     // Meals
     Route::get('/meals', [MealController::class, 'index'])->name('meals.index');
