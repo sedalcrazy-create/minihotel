@@ -163,7 +163,7 @@
         <tbody>
             @foreach($pendingMaintenance as $maintenance)
                 <tr>
-                    <td>{{ $maintenance->bed->identifier }}</td>
+                    <td>{{ $maintenance->bed->identifier ?? "-" }}</td>
                     <td>{{ $maintenance->description }}</td>
                     <td>{{ $maintenance->reporter->name }}</td>
                     <td>{{ $maintenance->created_at->format('Y-m-d H:i') }}</td>
