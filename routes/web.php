@@ -57,9 +57,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/meals/{meal}', [MealController::class, 'destroy'])->name('meals.destroy');
 
     // Cleaning
-    Route::get('/cleaning', [CleaningController::class, 'index'])->name('cleaning.index');
-    Route::get('/cleaning/pending', [CleaningController::class, 'pending'])->name('cleaning.pending');
-    Route::post('/cleaning', [CleaningController::class, 'store'])->name('cleaning.store');
 
     // Maintenance
     Route::resource('maintenance', MaintenanceController::class);

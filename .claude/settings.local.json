@@ -38,7 +38,30 @@
       "Bash(root@37.152.174.87:/var/www/hotel/resources/views/)",
       "Bash(\"F:/New folder/hotel/routes/web.php\" )",
       "Bash(root@37.152.174.87:/var/www/hotel/routes/web.php)",
-      "WebFetch(domain:ria.jafamhis.ir)"
+      "WebFetch(domain:ria.jafamhis.ir)",
+      "Bash(app/Http/Controllers/ConferenceController.php )",
+      "Bash(app/Http/Controllers/CourseController.php )",
+      "Bash(app/Models/Conference.php )",
+      "Bash(app/Models/Course.php )",
+      "Bash(database/migrations/2024_01_01_000015_fix_reservations_foreign_key.php )",
+      "Bash(database/migrations/2024_01_01_000016_create_courses_table.php )",
+      "Bash(database/migrations/2024_01_01_000017_create_conferences_table.php )",
+      "Bash(database/migrations/2024_01_01_000018_add_bimeh_fields_to_personnel.php )",
+      "Bash(database/migrations/2024_01_01_000019_add_course_conference_to_reservations.php )",
+      "Bash(database/migrations/2024_01_01_000020_add_gender_to_units.php )",
+      "Bash(database/migrations/2024_01_01_000021_add_gender_to_guests.php )",
+      "Bash(database/migrations/2024_01_01_000022_add_unit_dates_to_maintenance.php )",
+      "Bash(database/seeders/DemoSeeder.php )",
+      "Bash(public/images/ )",
+      "Bash(resources/views/conferences/ )",
+      "Bash(resources/views/courses/ )",
+      "Bash(resources/views/auth/login.blade.php )",
+      "Bash(resources/views/dashboard.blade.php )",
+      "Bash(resources/views/layouts/app.blade.php )",
+      "Bash(routes/web.php )",
+      "Bash(SPEC_V2.md)",
+      "Bash(dir \"C:\\\\Users\\\\sedal\\\\AppData\\\\Local\\\\ms-playwright\")",
+      "Bash(node test-site.js:*)"
     ]
   }
 }

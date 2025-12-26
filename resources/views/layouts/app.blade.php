@@ -120,7 +120,7 @@
         /* لوگو سمت چپ */
         .header-logo-section {
             position: absolute;
-            left: 40px;
+            right: 40px;
             top: 50%;
             transform: translateY(-50%);
             display: flex;
@@ -131,8 +131,8 @@
 
         .header-logo-circle {
             position: relative;
-            width: 180px;
-            height: 180px;
+            width: 140px;
+            height: 140px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -598,7 +598,6 @@
             <a href="{{ route('courses.index') }}">📚 دوره‌ها</a>
             <a href="{{ route('conferences.index') }}">🎤 همایش‌ها</a>
             <a href="{{ route('meals.index') }}">🍽️ وعده غذایی</a>
-            <a href="{{ route('cleaning.index') }}">🧹 نظافت</a>
             <a href="{{ route('maintenance.index') }}">🔧 تعمیرات</a>
             <a href="{{ route('reports.index') }}">📊 گزارش‌ها</a>
             <div class="user-info">

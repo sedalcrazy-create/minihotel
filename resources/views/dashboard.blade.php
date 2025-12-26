@@ -19,12 +19,6 @@
         <div style="font-size: 12px; color: #6b7280;">در حال استفاده</div>
     </div>
 
-    <div class="stat-card cleaning">
-        <div class="stat-label">نیاز به نظافت</div>
-        <div class="stat-value">{{ $cleaningBeds }}</div>
-        <div style="font-size: 12px; color: #6b7280;">آماده نظافت</div>
-    </div>
-
     <div class="stat-card maintenance">
         <div class="stat-label">در تعمیر</div>
         <div class="stat-value">{{ $maintenanceBeds }}</div>
@@ -213,9 +207,6 @@
                     </a>
                     <a id="maintenanceBtn" href="#" class="btn btn-secondary" style="text-align: center; padding: 12px;">
                         🔧 ثبت درخواست تعمیر
-                    </a>
-                    <a id="cleaningBtn" href="#" class="btn btn-success" style="text-align: center; padding: 12px;">
-                        🧹 ثبت نظافت
                     </a>
                 </div>
             </div>
