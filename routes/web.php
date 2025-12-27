@@ -32,6 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/personnel/template', [\App\Http\Controllers\PersonnelController::class, 'template'])->name('personnel.template');
     Route::get('/personnel/export', [\App\Http\Controllers\PersonnelController::class, 'export'])->name('personnel.export');
     Route::post('/personnel/import', [\App\Http\Controllers\PersonnelController::class, 'import'])->name('personnel.import');
+    Route::post('/personnel/sync-bimeh', [\App\Http\Controllers\PersonnelController::class, 'syncFromBimeh'])->name('personnel.sync-bimeh');
     Route::resource('personnel', \App\Http\Controllers\PersonnelController::class);
 
     // Reservations

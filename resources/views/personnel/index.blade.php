@@ -13,6 +13,11 @@
             @csrf
             <input type="file" id="importFile" name="file" accept=".xlsx,.xls,.csv" onchange="document.getElementById('importForm').submit()">
         </form>
+        <button onclick="document.getElementById('bimehFile').click()" class="btn btn-primary" style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);" title="همگام‌سازی با فایل بیمه ماهانه">🏦 همگام‌سازی بیمه</button>
+        <form id="bimehForm" action="{{ route('personnel.sync-bimeh') }}" method="POST" enctype="multipart/form-data" style="display: none;">
+            @csrf
+            <input type="file" id="bimehFile" name="file" accept=".xlsx,.xls" onchange="confirmBimehSync()">
+        </form>
         <a href="{{ route('personnel.create') }}" class="btn btn-primary">+ افزودن پرسنل</a>
     </div>
 </div>
@@ -25,6 +30,7 @@
             <p style="margin: 5px 0; color: #6b7280;">📄 ابتدا <strong>تمپلیت اکسل</strong> را دانلود کنید - این فایل شامل راهنمای کامل و نمونه داده است</p>
             <p style="margin: 5px 0; color: #6b7280;">✏️ فایل را با اطلاعات پرسنل پر کنید (ستون‌های الزامی با علامت * مشخص شده‌اند)</p>
             <p style="margin: 5px 0; color: #6b7280;">📤 فایل پر شده را از طریق دکمه <strong>ورود اکسل</strong> آپلود کنید</p>
+            <p style="margin: 5px 0; color: #6b7280;">🏦 برای همگام‌سازی ماهانه با فایل بیمه از دکمه <strong>همگام‌سازی بیمه</strong> استفاده کنید (فقط فایل‌های Bimeh_YYYYMMDD.xlsx)</p>
             <p style="margin: 5px 0; color: #6b7280;">📥 برای دانلود لیست فعلی پرسنل از دکمه <strong>خروجی اکسل</strong> استفاده کنید</p>
         </div>
     </div>
@@ -74,4 +80,27 @@
         </div>
     @endif
 </div>
+
+<script>
+function confirmBimehSync() {
+    const confirmed = confirm(
+        '⚠️ هشدار: همگام‌سازی بیمه\n\n' +
+        'این عملیات:\n' +
+        '• پرسنل جدید را اضافه می‌کند\n' +
+        '• اطلاعات پرسنل موجود را آپدیت می‌کند\n' +
+        '• پرسنلی که در فایل نیست را غیرفعال می‌کند\n\n' +
+        'آیا مطمئن هستید؟'
+    );
+
+    if (confirmed) {
+        // نمایش پیام در حال پردازش
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 9999; display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; flex-direction: column;';
+        overlay.innerHTML = '<div style="text-align: center;"><div style="font-size: 48px; margin-bottom: 20px;">⏳</div><div>در حال همگام‌سازی با فایل بیمه...</div><div style="font-size: 14px; margin-top: 10px; opacity: 0.8;">لطفاً صبر کنید، این کار ممکن است چند دقیقه طول بکشد.</div></div>';
+        document.body.appendChild(overlay);
+
+        document.getElementById('bimehForm').submit();
+    }
+}
+</script>
 @endsection

@@ -8,9 +8,12 @@ use App\Models\Personnel;
 use App\Models\Guest;
 use App\Models\Room;
 use App\Models\Bed;
+use App\Models\Course;
+use App\Models\Conference;
 use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class ReservationController extends Controller
 {
@@ -29,6 +32,22 @@ class ReservationController extends Controller
         $personnel = Personnel::where('is_active', true)->orderBy('first_name')->get();
         $rooms = Room::with(['unit', 'beds'])->where('is_active', true)->get();
 
+        // دوره‌ها و همایش‌های 45 روز آینده
+        $today = Carbon::today();
+        $futureLimit = Carbon::today()->addDays(45);
+
+        $courses = Course::where('is_active', true)
+            ->where('start_date', '>=', $today)
+            ->where('start_date', '<=', $futureLimit)
+            ->orderBy('start_date')
+            ->get();
+
+        $conferences = Conference::where('is_active', true)
+            ->where('start_date', '>=', $today)
+            ->where('start_date', '<=', $futureLimit)
+            ->orderBy('start_date')
+            ->get();
+
         // Pre-selected bed and room from dashboard
         $selectedBedId = $request->get('bed_id');
         $selectedRoomId = $request->get('room_id');
@@ -39,13 +58,15 @@ class ReservationController extends Controller
             $selectedRoomId = $bed ? $bed->room_id : null;
         }
 
-        return view('reservations.create', compact('admissionTypes', 'personnel', 'rooms', 'selectedBedId', 'selectedRoomId'));
+        return view('reservations.create', compact('admissionTypes', 'personnel', 'rooms', 'courses', 'conferences', 'selectedBedId', 'selectedRoomId'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'admission_type_id' => 'required|exists:admission_types,id',
+            'course_id' => 'nullable|exists:courses,id',
+            'conference_id' => 'nullable|exists:conferences,id',
             'personnel_id' => 'required_without:guest_id|exists:personnel,id',
             'guest_name' => 'required_without:personnel_id|string',
             'guest_phone' => 'nullable|string',
@@ -56,6 +77,51 @@ class ReservationController extends Controller
             'check_out_date' => 'required|date|after:check_in_date',
             'notes' => 'nullable|string',
         ]);
+
+        // Validation: بررسی ارتباط نوع پذیرش با دوره/همایش
+        $admissionType = AdmissionType::find($validated['admission_type_id']);
+
+        if ($admissionType && str_contains($admissionType->name, 'دوره')) {
+            if (empty($request->course_id)) {
+                return back()->withErrors(['course_id' => 'انتخاب دوره برای این نوع پذیرش الزامی است.'])->withInput();
+            }
+
+            // بررسی تاریخ رزرو با تاریخ دوره
+            $course = Course::find($request->course_id);
+            if ($course) {
+                $checkIn = Carbon::parse($request->check_in_date);
+                $checkOut = Carbon::parse($request->check_out_date);
+                $courseStart = Carbon::parse($course->start_date);
+                $courseEnd = Carbon::parse($course->end_date);
+
+                if ($checkIn->lt($courseStart) || $checkOut->gt($courseEnd)) {
+                    return back()->withErrors([
+                        'check_in_date' => 'تاریخ رزرو باید در بازه تاریخ دوره (' . $course->start_date . ' تا ' . $course->end_date . ') باشد.'
+                    ])->withInput();
+                }
+            }
+        }
+
+        if ($admissionType && str_contains($admissionType->name, 'همایش')) {
+            if (empty($request->conference_id)) {
+                return back()->withErrors(['conference_id' => 'انتخاب همایش برای این نوع پذیرش الزامی است.'])->withInput();
+            }
+
+            // بررسی تاریخ رزرو با تاریخ همایش
+            $conference = Conference::find($request->conference_id);
+            if ($conference) {
+                $checkIn = Carbon::parse($request->check_in_date);
+                $checkOut = Carbon::parse($request->check_out_date);
+                $confStart = Carbon::parse($conference->start_date);
+                $confEnd = Carbon::parse($conference->end_date);
+
+                if ($checkIn->lt($confStart) || $checkOut->gt($confEnd)) {
+                    return back()->withErrors([
+                        'check_in_date' => 'تاریخ رزرو باید در بازه تاریخ همایش (' . $conference->start_date . ' تا ' . $conference->end_date . ') باشد.'
+                    ])->withInput();
+                }
+            }
+        }
 
         DB::beginTransaction();
         try {
@@ -71,6 +137,8 @@ class ReservationController extends Controller
             // Create reservation
             $reservation = Reservation::create([
                 'admission_type_id' => $validated['admission_type_id'],
+                'course_id' => $validated['course_id'] ?? null,
+                'conference_id' => $validated['conference_id'] ?? null,
                 'personnel_id' => $validated['personnel_id'] ?? null,
                 'guest_id' => $validated['guest_id'] ?? null,
                 'room_id' => $validated['room_id'],

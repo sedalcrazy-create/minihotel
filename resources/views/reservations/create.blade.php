@@ -17,11 +17,45 @@
             <select name="admission_type_id" id="admission_type_id" class="form-control" required>
                 <option value="">انتخاب کنید...</option>
                 @foreach($admissionTypes as $type)
-                    <option value="{{ $type->id }}" {{ old('admission_type_id') == $type->id ? 'selected' : '' }}>
+                    <option value="{{ $type->id }}" data-name="{{ $type->name }}" {{ old('admission_type_id') == $type->id ? 'selected' : '' }}>
                         {{ $type->name }}
                     </option>
                 @endforeach
             </select>
+        </div>
+
+        <!-- انتخاب دوره (فقط برای دوره کلاسی) -->
+        <div class="form-group" id="courseSection" style="display: none;">
+            <label for="course_id">انتخاب دوره *</label>
+            <select name="course_id" id="course_id" class="form-control">
+                <option value="">انتخاب کنید...</option>
+                @foreach($courses as $course)
+                    <option value="{{ $course->id }}"
+                            data-start="{{ $course->start_date }}"
+                            data-end="{{ $course->end_date }}"
+                            {{ old('course_id') == $course->id ? 'selected' : '' }}>
+                        {{ $course->name }} ({{ $course->code }}) - {{ $course->start_date }} تا {{ $course->end_date }}
+                    </option>
+                @endforeach
+            </select>
+            <small class="form-text" style="color: #6b7280;">فقط دوره‌های 45 روز آینده نمایش داده می‌شود</small>
+        </div>
+
+        <!-- انتخاب همایش (فقط برای همایش) -->
+        <div class="form-group" id="conferenceSection" style="display: none;">
+            <label for="conference_id">انتخاب همایش *</label>
+            <select name="conference_id" id="conference_id" class="form-control">
+                <option value="">انتخاب کنید...</option>
+                @foreach($conferences as $conference)
+                    <option value="{{ $conference->id }}"
+                            data-start="{{ $conference->start_date }}"
+                            data-end="{{ $conference->end_date }}"
+                            {{ old('conference_id') == $conference->id ? 'selected' : '' }}>
+                        {{ $conference->name }} ({{ $conference->code }}) - {{ $conference->start_date }} تا {{ $conference->end_date }}
+                    </option>
+                @endforeach
+            </select>
+            <small class="form-text" style="color: #6b7280;">فقط همایش‌های 45 روز آینده نمایش داده می‌شود</small>
         </div>
 
         <div style="border: 2px dashed #e5e7eb; border-radius: 8px; padding: 20px; margin-bottom: 20px; background: #f9fafb;">
@@ -113,6 +147,14 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const admissionTypeSelect = document.getElementById('admission_type_id');
+        const courseSection = document.getElementById('courseSection');
+        const conferenceSection = document.getElementById('conferenceSection');
+        const courseSelect = document.getElementById('course_id');
+        const conferenceSelect = document.getElementById('conference_id');
+        const checkInDate = document.getElementById('check_in_date');
+        const checkOutDate = document.getElementById('check_out_date');
+
         const personnelRadio = document.getElementById('guestTypePersonnel');
         const externalRadio = document.getElementById('guestTypeExternal');
         const personnelSection = document.getElementById('personnelSection');
@@ -123,6 +165,60 @@
         const bedsSection = document.getElementById('bedsSection');
         const bedsList = document.getElementById('bedsList');
         const preSelectedBedId = document.getElementById('preSelectedBedId').value;
+
+        // نمایش/مخفی کردن دوره/همایش بر اساس نوع پذیرش
+        function updateAdmissionTypeSections() {
+            const selectedOption = admissionTypeSelect.options[admissionTypeSelect.selectedIndex];
+            const admissionTypeName = selectedOption.dataset.name || '';
+
+            courseSection.style.display = 'none';
+            conferenceSection.style.display = 'none';
+            courseSelect.required = false;
+            conferenceSelect.required = false;
+
+            if (admissionTypeName.includes('دوره')) {
+                courseSection.style.display = 'block';
+                courseSelect.required = true;
+            } else if (admissionTypeName.includes('همایش')) {
+                conferenceSection.style.display = 'block';
+                conferenceSelect.required = true;
+            }
+        }
+
+        admissionTypeSelect.addEventListener('change', updateAdmissionTypeSections);
+
+        // تنظیم خودکار تاریخ بر اساس دوره انتخاب شده
+        courseSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            if (selectedOption.value) {
+                const startDate = selectedOption.dataset.start;
+                const endDate = selectedOption.dataset.end;
+                checkInDate.value = startDate;
+                checkOutDate.value = endDate;
+                checkInDate.min = startDate;
+                checkInDate.max = endDate;
+                checkOutDate.min = startDate;
+                checkOutDate.max = endDate;
+            }
+        });
+
+        // تنظیم خودکار تاریخ بر اساس همایش انتخاب شده
+        conferenceSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            if (selectedOption.value) {
+                const startDate = selectedOption.dataset.start;
+                const endDate = selectedOption.dataset.end;
+                checkInDate.value = startDate;
+                checkOutDate.value = endDate;
+                checkInDate.min = startDate;
+                checkInDate.max = endDate;
+                checkOutDate.min = startDate;
+                checkOutDate.max = endDate;
+            }
+        });
+
+        // اجرای اولیه برای نمایش صحیح بخش‌ها
+        updateAdmissionTypeSections();
 
         // Toggle guest type sections
         function updateGuestSections() {

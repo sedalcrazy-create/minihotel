@@ -14,8 +14,9 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // Only force HTTPS when accessed via domain (CDN)
-        if (request()->getHost() !== '37.152.174.87') {
+        // Only force HTTPS when accessed via domain (CDN), not localhost
+        $host = request()->getHost();
+        if ($host !== '37.152.174.87' && $host !== 'localhost' && !str_contains($host, '127.0.0.1')) {
             URL::forceScheme('https');
         }
     }
