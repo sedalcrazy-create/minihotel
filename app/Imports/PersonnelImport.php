@@ -3,48 +3,107 @@
 namespace App\Imports;
 
 use App\Models\Personnel;
-use Maatwebsite\Excel\Concerns\ToModel;
+use App\Models\ActivityLog;
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Maatwebsite\Excel\Concerns\WithValidation;
 
-class PersonnelImport implements ToModel, WithHeadingRow, WithValidation
+class PersonnelImport implements ToCollection, WithHeadingRow
 {
-    public function model(array $row)
+    public function collection(Collection $rows)
     {
-        return new Personnel([
-            'employment_code' => $row['کد_پرسنلی'] ?? $row['employment_code'],
-            'first_name' => $row['نام'] ?? $row['first_name'],
-            'last_name' => $row['نام_خانوادگی'] ?? $row['last_name'],
-            'birth_year' => $row['سال_تولد'] ?? $row['birth_year'],
-            'birth_month' => $row['ماه_تولد'] ?? $row['birth_month'],
-            'birth_day' => $row['روز_تولد'] ?? $row['birth_day'],
-            'national_code' => $row['کد_ملی'] ?? $row['national_code'],
-            'father_name' => $row['نام_پدر'] ?? $row['father_name'] ?? null,
-            'relation' => $row['نسبت'] ?? $row['relation'] ?? null,
-            'account_number' => $row['شماره_حساب'] ?? $row['account_number'] ?? null,
-            'service_location_code' => $row['کد_محل_خدمت'] ?? $row['service_location_code'] ?? null,
-            'service_location' => $row['محل_خدمت'] ?? $row['service_location'] ?? null,
-            'department_code' => $row['کد_دپارتمان'] ?? $row['department_code'] ?? null,
-            'department' => $row['دپارتمان'] ?? $row['department'] ?? null,
-            'employment_status' => $row['وضعیت_استخدام'] ?? $row['employment_status'],
-            'main_or_branch' => $row['ستاد_شعبه'] ?? $row['main_or_branch'] ?? null,
-            'funkefalat' => $row['فوق_العاده'] ?? $row['funkefalat'] ?? null,
-            'partner_employment_status' => $row['وضعیت_استخدام_همسر'] ?? $row['partner_employment_status'] ?? null,
-            'gender' => $row['جنسیت'] ?? $row['gender'] ?? 'male',
-        ]);
+        foreach ($rows as $row) {
+            $data = [
+                'employment_code' => $this->getFieldValue($row, ['کد_پرسنلی', 'employment_code']),
+                'first_name' => $this->getFieldValue($row, ['نام', 'first_name']),
+                'last_name' => $this->getFieldValue($row, ['نام_خانوادگی', 'نام خانوادگی', 'last_name']),
+                'birth_year' => $this->getFieldValue($row, ['سال_تولد', 'سال تولد', 'birth_year']),
+                'birth_month' => $this->getFieldValue($row, ['ماه_تولد', 'ماه تولد', 'birth_month']),
+                'birth_day' => $this->getFieldValue($row, ['روز_تولد', 'روز تولد', 'birth_day']),
+                'national_code' => $this->getFieldValue($row, ['کد_ملی', 'کد ملی', 'national_code']),
+                'father_name' => $this->getFieldValue($row, ['نام_پدر', 'نام پدر', 'father_name']),
+                'relation' => $this->getFieldValue($row, ['نسبت', 'relation']),
+                'account_number' => $this->getFieldValue($row, ['شماره_حساب', 'شماره حساب', 'account_number']),
+                'service_location_code' => $this->getFieldValue($row, ['کد_محل_خدمت', 'کد محل خدمت', 'service_location_code']),
+                'service_location' => $this->getFieldValue($row, ['محل_خدمت', 'محل خدمت', 'service_location']),
+                'department_code' => $this->getFieldValue($row, ['کد_دپارتمان', 'کد دپارتمان', 'department_code']),
+                'department' => $this->getFieldValue($row, ['دپارتمان', 'department']),
+                'employment_status' => $this->getFieldValue($row, ['وضعیت_استخدام', 'وضعیت استخدام', 'employment_status']),
+                'main_or_branch' => $this->getFieldValue($row, ['ستاد_شعبه', 'ستاد/شعبه', 'main_or_branch']),
+                'funkefalat' => $this->getFieldValue($row, ['فوق_العاده', 'فوق العاده', 'funkefalat']),
+                'partner_employment_status' => $this->getFieldValue($row, ['وضعیت_استخدام_همسر', 'وضعیت استخدام همسر', 'partner_employment_status']),
+                'gender' => $this->parseGender($row),
+            ];
+
+            // حذف مقادیر null
+            $data = array_filter($data, function($value) {
+                return !is_null($value) && $value !== '';
+            });
+
+            // بررسی فیلدهای الزامی
+            if (empty($data['employment_code'])) {
+                continue; // رد کردن ردیف‌های بدون کد پرسنلی
+            }
+
+            // آپدیت یا ایجاد
+            Personnel::updateOrCreate(
+                ['employment_code' => $data['employment_code']],
+                $data
+            );
+        }
     }
 
-    public function rules(): array
+    /**
+     * جستجوی مقدار فیلد با نام‌های مختلف
+     */
+    private function getFieldValue($row, array $possibleNames)
     {
-        return [
-            '*.کد_پرسنلی' => 'required',
-            '*.نام' => 'required',
-            '*.نام_خانوادگی' => 'required',
-            '*.سال_تولد' => 'required|integer',
-            '*.ماه_تولد' => 'required|integer|between:1,12',
-            '*.روز_تولد' => 'required|integer|between:1,31',
-            '*.کد_ملی' => 'required|size:10',
-            '*.وضعیت_استخدام' => 'required',
+        // ابتدا جستجوی مستقیم
+        foreach ($possibleNames as $name) {
+            if (isset($row[$name]) && !empty($row[$name])) {
+                return trim($row[$name]);
+            }
+        }
+
+        // جستجو با حذف شماره از ابتدای نام ستون (مثل "2.کد_پرسنلی" -> "کد_پرسنلی")
+        foreach ($row as $key => $value) {
+            if (!empty($value)) {
+                // حذف شماره و نقطه از ابتدای نام ستون
+                $cleanKey = preg_replace('/^\d+\./', '', $key);
+
+                if (in_array($cleanKey, $possibleNames)) {
+                    return trim($value);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * تبدیل جنسیت
+     */
+    private function parseGender($row): string
+    {
+        $gender = $this->getFieldValue($row, ['جنسیت', 'gender']);
+
+        if (empty($gender)) {
+            return 'male';
+        }
+
+        $gender = strtolower(trim($gender));
+
+        $map = [
+            'مرد' => 'male',
+            'آقا' => 'male',
+            'male' => 'male',
+            'm' => 'male',
+            'زن' => 'female',
+            'خانم' => 'female',
+            'female' => 'female',
+            'f' => 'female',
         ];
+
+        return $map[$gender] ?? 'male';
     }
 }

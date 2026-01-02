@@ -91,23 +91,27 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="department_code">کد دپارتمان</label>
-                    <input type="text" name="department_code" id="department_code" class="form-control" value="{{ old('department_code') }}">
+                    <label for="department_code">دپارتمان</label>
+                    <select name="department_code" id="department_code" class="form-control">
+                        <option value="">انتخاب کنید...</option>
+                        @foreach($departments as $dept)
+                            <option value="{{ $dept->code }}" {{ old('department_code') == $dept->code ? 'selected' : '' }}>
+                                {{ $dept->name }} (کد: {{ $dept->code }})
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="department">نام دپارتمان</label>
-                    <input type="text" name="department" id="department" class="form-control" value="{{ old('department') }}">
-                </div>
-
-                <div class="form-group">
-                    <label for="service_location_code">کد محل خدمت</label>
-                    <input type="text" name="service_location_code" id="service_location_code" class="form-control" value="{{ old('service_location_code') }}">
-                </div>
-
-                <div class="form-group">
-                    <label for="service_location">محل خدمت</label>
-                    <input type="text" name="service_location" id="service_location" class="form-control" value="{{ old('service_location') }}">
+                    <label for="service_location_code">محل خدمت</label>
+                    <select name="service_location_code" id="service_location_code" class="form-control">
+                        <option value="">انتخاب کنید...</option>
+                        @foreach($serviceLocations as $location)
+                            <option value="{{ $location->code }}" {{ old('service_location_code') == $location->code ? 'selected' : '' }}>
+                                {{ $location->name }} (کد: {{ $location->code }})
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
         </div>

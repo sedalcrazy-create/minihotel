@@ -34,7 +34,10 @@ class PersonnelController extends Controller
 
     public function create()
     {
-        return view('personnel.create');
+        $serviceLocations = DB::table('service_locations')->orderBy('name')->get();
+        $departments = DB::table('departments')->orderBy('name')->get();
+
+        return view('personnel.create', compact('serviceLocations', 'departments'));
     }
 
     public function store(Request $request)
@@ -85,7 +88,10 @@ class PersonnelController extends Controller
 
     public function edit(Personnel $personnel)
     {
-        return view('personnel.edit', compact('personnel'));
+        $serviceLocations = DB::table('service_locations')->orderBy('name')->get();
+        $departments = DB::table('departments')->orderBy('name')->get();
+
+        return view('personnel.edit', compact('personnel', 'serviceLocations', 'departments'));
     }
 
     public function update(Request $request, Personnel $personnel)

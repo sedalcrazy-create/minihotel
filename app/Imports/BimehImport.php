@@ -48,10 +48,29 @@ class BimehImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                     'gender' => $this->parseGender($row),
                     'employment_status' => $this->getFieldValue($row, ['odaayt_khdmt', 'وضعیت_استخدام', 'وضعیت استخدام', 'وضعیت خدمت', 'employment_status']),
                     'main_or_branch' => $this->getFieldValue($row, ['asly_fraay', 'ستاد_شعبه', 'ستاد/شعبه', 'اصلی-فرعی', 'اصلي-فرعي', 'main_or_branch']),
-                    'department_code' => $this->getFieldValue($row, ['kd_adarh_amor', 'کد_دپارتمان', 'کد دپارتمان', 'کد اداره امور', 'کد_اداره', 'department_code']),
-                    'department' => $this->getFieldValue($row, ['adarh_amor', 'دپارتمان', 'department', 'اداره امور', 'اداره', 'اداره_امور']),
-                    'service_location_code' => $this->getFieldValue($row, ['kd_mhl_khdmt', 'کد_محل_خدمت', 'کد محل خدمت', 'service_location_code']),
-                    'service_location' => $this->getFieldValue($row, ['mhl_khdmt', 'محل_خدمت', 'محل خدمت', 'service_location']),
+                ];
+
+                // محل خدمت: ابتدا کد را بگیر و اسم را از دیتابیس lookup کن
+                $serviceLocationCode = $this->getFieldValue($row, ['kd_mhl_khdmt', 'کد_محل_خدمت', 'کد محل خدمت', 'service_location_code']);
+                if ($serviceLocationCode) {
+                    $data['service_location_code'] = $serviceLocationCode;
+                    $serviceLocation = DB::table('service_locations')->where('code', $serviceLocationCode)->first();
+                    if ($serviceLocation) {
+                        $data['service_location'] = $serviceLocation->name;
+                    }
+                }
+
+                // دپارتمان: ابتدا کد را بگیر و اسم را از دیتابیس lookup کن
+                $departmentCode = $this->getFieldValue($row, ['kd_adarh_amor', 'کد_دپارتمان', 'کد دپارتمان', 'کد اداره امور', 'کد_اداره', 'department_code']);
+                if ($departmentCode) {
+                    $data['department_code'] = $departmentCode;
+                    $department = DB::table('departments')->where('code', $departmentCode)->first();
+                    if ($department) {
+                        $data['department'] = $department->name;
+                    }
+                }
+
+                $data = array_merge($data, [
                     'relation' => $this->getFieldValue($row, ['nsbt', 'نسبت', 'relation']),
                     'account_number' => $this->getFieldValue($row, ['shmarh_hsab', 'شماره_حساب', 'شماره حساب', 'account_number']),
                     'funkefalat' => $this->getFieldValue($row, ['فوق_العاده', 'فوق العاده', 'funkefalat']),
