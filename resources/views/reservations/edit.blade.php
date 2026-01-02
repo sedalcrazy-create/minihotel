@@ -87,13 +87,13 @@
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
             <div class="form-group">
-                <label for="check_in_date">تاریخ ورود *</label>
-                <input type="date" name="check_in_date" id="check_in_date" class="form-control" value="{{ old('check_in_date', $reservation->check_in_date->format('Y-m-d')) }}" required>
+                <label for="check_in_date">تاریخ ورود (شمسی) *</label>
+                <input type="text" name="check_in_date" class="jalali-datepicker form-control" id="check_in_date" value="{{ old('check_in_date', \Morilog\Jalali\Jalalian::fromCarbon($reservation->check_in_date)->format('Y/m/d')) }}" required placeholder="۱۴۰۴/۱۰/۱۴">
             </div>
 
             <div class="form-group">
-                <label for="check_out_date">تاریخ خروج *</label>
-                <input type="date" name="check_out_date" id="check_out_date" class="form-control" value="{{ old('check_out_date', $reservation->check_out_date->format('Y-m-d')) }}" required>
+                <label for="check_out_date">تاریخ خروج (شمسی) *</label>
+                <input type="text" name="check_out_date" class="jalali-datepicker form-control" id="check_out_date" value="{{ old('check_out_date', \Morilog\Jalali\Jalalian::fromCarbon($reservation->check_out_date)->format('Y/m/d')) }}" required placeholder="۱۴۰۴/۱۰/۱۵">
             </div>
         </div>
 

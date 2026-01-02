@@ -63,6 +63,18 @@ class ReservationController extends Controller
 
     public function store(Request $request)
     {
+        // تبدیل تاریخ شمسی به میلادی
+        if ($request->check_in_date) {
+            $checkInDate = $this->convertPersianToEnglish($request->check_in_date);
+            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y/m/d', $checkInDate);
+            $request->merge(['check_in_date' => $jalali->toCarbon()->format('Y-m-d')]);
+        }
+        if ($request->check_out_date) {
+            $checkOutDate = $this->convertPersianToEnglish($request->check_out_date);
+            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y/m/d', $checkOutDate);
+            $request->merge(['check_out_date' => $jalali->toCarbon()->format('Y-m-d')]);
+        }
+
         $validated = $request->validate([
             'admission_type_id' => 'required|exists:admission_types,id',
             'course_id' => 'nullable|exists:courses,id',
@@ -231,6 +243,18 @@ class ReservationController extends Controller
 
     public function update(Request $request, Reservation $reservation)
     {
+        // تبدیل تاریخ شمسی به میلادی
+        if ($request->check_in_date) {
+            $checkInDate = $this->convertPersianToEnglish($request->check_in_date);
+            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y/m/d', $checkInDate);
+            $request->merge(['check_in_date' => $jalali->toCarbon()->format('Y-m-d')]);
+        }
+        if ($request->check_out_date) {
+            $checkOutDate = $this->convertPersianToEnglish($request->check_out_date);
+            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y/m/d', $checkOutDate);
+            $request->merge(['check_out_date' => $jalali->toCarbon()->format('Y-m-d')]);
+        }
+
         $validated = $request->validate([
             'admission_type_id' => 'required|exists:admission_types,id',
             'personnel_id' => 'nullable|exists:personnel,id',
@@ -375,5 +399,15 @@ class ReservationController extends Controller
             DB::rollback();
             return back()->with('error', 'خطا در چک‌اوت: ' . $e->getMessage());
         }
+    }
+
+    /**
+     * تبدیل اعداد فارسی به انگلیسی
+     */
+    private function convertPersianToEnglish($string)
+    {
+        $persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        $english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        return str_replace($persian, $english, $string);
     }
 }
