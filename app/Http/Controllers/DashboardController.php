@@ -26,7 +26,7 @@ class DashboardController extends Controller
             ->get();
 
         // رزروهای فعال
-        $activeReservations = Reservation::with(['personnel', 'guest', 'room.unit'])
+        $activeReservations = Reservation::with(['admissionType', 'personnel', 'guest', 'room.unit', 'beds'])
             ->where('status', 'checked_in')
             ->latest()
             ->take(10)
