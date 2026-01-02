@@ -70,6 +70,7 @@ class ReservationController extends Controller
             'personnel_id' => 'required_without:guest_id|exists:personnel,id',
             'guest_name' => 'required_without:personnel_id|string',
             'guest_phone' => 'nullable|string',
+            'guest_gender' => 'required_without:personnel_id|in:male,female',
             'room_id' => 'required|exists:rooms,id',
             'bed_ids' => 'required|array|min:1',
             'bed_ids.*' => 'exists:beds,id',
@@ -123,6 +124,44 @@ class ReservationController extends Controller
             }
         }
 
+        // Validation: جلوگیری از اختلاط جنسیتی در یک اتاق
+        $newGuestGender = null;
+        if ($request->personnel_id) {
+            $personnel = Personnel::find($request->personnel_id);
+            $newGuestGender = $personnel ? $personnel->gender : null;
+        } else {
+            $newGuestGender = $request->guest_gender;
+        }
+
+        // بررسی رزروهای فعال در همین اتاق
+        $existingReservations = Reservation::where('room_id', $validated['room_id'])
+            ->whereIn('status', ['pending', 'confirmed', 'reserved', 'checked_in'])
+            ->where(function($query) use ($validated) {
+                $query->whereBetween('check_in_date', [$validated['check_in_date'], $validated['check_out_date']])
+                      ->orWhereBetween('check_out_date', [$validated['check_in_date'], $validated['check_out_date']])
+                      ->orWhere(function($q) use ($validated) {
+                          $q->where('check_in_date', '<=', $validated['check_in_date'])
+                            ->where('check_out_date', '>=', $validated['check_out_date']);
+                      });
+            })
+            ->with(['personnel', 'guest'])
+            ->get();
+
+        foreach ($existingReservations as $existing) {
+            $existingGender = null;
+            if ($existing->personnel) {
+                $existingGender = $existing->personnel->gender;
+            } elseif ($existing->guest) {
+                $existingGender = $existing->guest->gender;
+            }
+
+            if ($existingGender && $newGuestGender && $existingGender !== $newGuestGender) {
+                return back()->withErrors([
+                    'room_id' => 'خطا: در این اتاق مهمان ' . ($existingGender === 'female' ? 'خانم' : 'آقا') . ' وجود دارد. اختلاط جنسیتی مجاز نیست.'
+                ])->withInput();
+            }
+        }
+
         DB::beginTransaction();
         try {
             // Create guest if needed
@@ -130,6 +169,7 @@ class ReservationController extends Controller
                 $guest = Guest::create([
                     'full_name' => $request->guest_name,
                     'phone' => $request->guest_phone,
+                    'gender' => $request->guest_gender,
                 ]);
                 $validated['guest_id'] = $guest->id;
             }
@@ -246,6 +286,34 @@ class ReservationController extends Controller
     {
         if (!in_array($reservation->status, ['pending', 'confirmed', 'reserved'])) {
             return back()->with('error', 'این رزرو قابل چک‌این نیست.');
+        }
+
+        // Validation: جلوگیری از اختلاط جنسیتی در یک اتاق
+        $newGuestGender = null;
+        if ($reservation->personnel) {
+            $newGuestGender = $reservation->personnel->gender;
+        } elseif ($reservation->guest) {
+            $newGuestGender = $reservation->guest->gender;
+        }
+
+        // بررسی رزروهای فعال در همین اتاق (به جز این رزرو)
+        $existingReservations = Reservation::where('room_id', $reservation->room_id)
+            ->where('id', '!=', $reservation->id)
+            ->whereIn('status', ['checked_in'])
+            ->with(['personnel', 'guest'])
+            ->get();
+
+        foreach ($existingReservations as $existing) {
+            $existingGender = null;
+            if ($existing->personnel) {
+                $existingGender = $existing->personnel->gender;
+            } elseif ($existing->guest) {
+                $existingGender = $existing->guest->gender;
+            }
+
+            if ($existingGender && $newGuestGender && $existingGender !== $newGuestGender) {
+                return back()->with('error', 'خطا: در این اتاق مهمان ' . ($existingGender === 'female' ? 'خانم' : 'آقا') . ' چک‌این شده است. اختلاط جنسیتی مجاز نیست.');
+            }
         }
 
         DB::beginTransaction();

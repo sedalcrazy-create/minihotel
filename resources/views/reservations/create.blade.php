@@ -96,6 +96,15 @@
                     <label for="guest_phone">شماره تماس</label>
                     <input type="text" name="guest_phone" id="guest_phone" class="form-control" value="{{ old('guest_phone') }}" placeholder="09121234567">
                 </div>
+
+                <div class="form-group">
+                    <label for="guest_gender">جنسیت *</label>
+                    <select name="guest_gender" id="guest_gender" class="form-control">
+                        <option value="">انتخاب کنید...</option>
+                        <option value="male" {{ old('guest_gender') == 'male' ? 'selected' : '' }}>آقا</option>
+                        <option value="female" {{ old('guest_gender') == 'female' ? 'selected' : '' }}>خانم</option>
+                    </select>
+                </div>
             </div>
         </div>
 
