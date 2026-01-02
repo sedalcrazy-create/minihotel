@@ -43,11 +43,7 @@
 
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px;">
         @foreach($units as $unit)
-            <div style="border: 2px solid {{ $unit->gender_restriction == 'female' ? '#ff69b4' : ($unit->gender_restriction == 'male' ? '#4a90d9' : '#e5e7eb') }}; border-radius: 8px; padding: 15px; background: {{ $unit->gender_restriction == 'female' ? 'linear-gradient(135deg, #fff0f5, #ffe4ec)' : ($unit->gender_restriction == 'male' ? 'linear-gradient(135deg, #f0f8ff, #e6f2ff)' : '#f9fafb') }}; position: relative; overflow: hidden;">
-                @if($unit->gender_restriction == 'female')
-                <div style="position: absolute; top: 8px; right: 8px; font-size: 16px; opacity: 0.6; animation: float 3s ease-in-out infinite;">🌸</div>
-                <div style="position: absolute; bottom: 55px; right: 8px; font-size: 14px; opacity: 0.5; animation: float 2.5s ease-in-out infinite 1s;">✨</div>
-                @endif
+            <div style="border: 2px solid {{ $unit->gender_restriction == 'female' ? '#ff69b4' : ($unit->gender_restriction == 'male' ? '#4a90d9' : '#e5e7eb') }}; border-radius: 8px; padding: 15px; background: {{ $unit->gender_restriction == 'female' ? 'linear-gradient(135deg, #fff0f5, #ffe4ec)' : ($unit->gender_restriction == 'male' ? 'linear-gradient(135deg, #f0f8ff, #e6f2ff)' : '#f9fafb') }};">
                 <div style="font-weight: bold; margin-bottom: 10px; color: {{ $unit->gender_restriction == 'female' ? '#d63384' : ($unit->gender_restriction == 'male' ? '#1e3a8a' : '#1e3a8a') }};">
                     واحد {{ $unit->number }}
                     <span style="font-size: 11px; font-weight: normal; color: #6b7280;">
@@ -61,7 +57,23 @@
                 </div>
 
                 @foreach($unit->rooms as $room)
-                    <div style="margin-bottom: 10px;">
+                    @php
+                        // بررسی وجود مهمان خانم در اتاق
+                        $hasFemaleGuest = false;
+                        foreach($room->beds as $bed) {
+                            foreach($bed->reservations as $reservation) {
+                                if($reservation->guest && $reservation->guest->gender === 'female') {
+                                    $hasFemaleGuest = true;
+                                    break 2;
+                                }
+                            }
+                        }
+                    @endphp
+                    <div style="margin-bottom: 10px; position: relative;">
+                        @if($hasFemaleGuest)
+                        <div style="position: absolute; top: -2px; right: -2px; font-size: 14px; opacity: 0.6; animation: float 3s ease-in-out infinite; z-index: 5;">🌸</div>
+                        <div style="position: absolute; bottom: 2px; right: -2px; font-size: 12px; opacity: 0.5; animation: float 2.5s ease-in-out infinite 1s; z-index: 5;">✨</div>
+                        @endif
                         <div style="font-size: 12px; color: #6b7280; margin-bottom: 5px;">
                             اتاق {{ $room->number }}
                         </div>

@@ -19,9 +19,10 @@ class DashboardController extends Controller
         $cleaningBeds = Bed::where('status', 'needs_cleaning')->count();
         $maintenanceBeds = Bed::where('status', 'under_maintenance')->count();
 
-        // واحدها با اتاق‌ها و تخت‌ها و رزروهای فعال
+        // واحدها با اتاق‌ها و تخت‌ها و رزروهای فعال (با اطلاعات مهمان)
         $units = Unit::with(['rooms.beds.reservations' => function($query) {
-                $query->whereIn('status', ['reserved', 'checked_in']);
+                $query->whereIn('status', ['reserved', 'checked_in'])
+                      ->with('guest');
             }])
             ->where('is_active', true)
             ->orderBy('number')

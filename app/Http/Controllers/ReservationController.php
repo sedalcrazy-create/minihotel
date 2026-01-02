@@ -285,9 +285,9 @@ class ReservationController extends Controller
                 'actual_check_out' => now(),
             ]);
 
-            // Update bed statuses to needs_cleaning
+            // Update bed statuses to available (no cleaning needed)
             foreach ($reservation->beds as $bed) {
-                $bed->update(['status' => 'needs_cleaning']);
+                $bed->update(['status' => 'available']);
             }
 
             ActivityLog::log('check_out', 'Reservation', $reservation->id, 'چک‌اوت انجام شد');
