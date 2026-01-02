@@ -67,10 +67,10 @@ class ReservationController extends Controller
             'admission_type_id' => 'required|exists:admission_types,id',
             'course_id' => 'nullable|exists:courses,id',
             'conference_id' => 'nullable|exists:conferences,id',
-            'personnel_id' => 'required_without:guest_id|exists:personnel,id',
-            'guest_name' => 'required_without:personnel_id|string',
+            'personnel_id' => 'nullable|exists:personnel,id',
+            'guest_name' => 'nullable|required_without:personnel_id|string',
             'guest_phone' => 'nullable|string',
-            'guest_gender' => 'required_without:personnel_id|in:male,female',
+            'guest_gender' => 'nullable|required_without:personnel_id|in:male,female',
             'room_id' => 'required|exists:rooms,id',
             'bed_ids' => 'required|array|min:1',
             'bed_ids.*' => 'exists:beds,id',
@@ -78,6 +78,13 @@ class ReservationController extends Controller
             'check_out_date' => 'required|date|after:check_in_date',
             'notes' => 'nullable|string',
         ]);
+
+        // بررسی حداقل یکی از پرسنل یا مهمان انتخاب شده باشد
+        if (empty($request->personnel_id) && empty($request->guest_name)) {
+            return back()->withErrors([
+                'personnel_id' => 'باید پرسنل یا مهمان خارجی انتخاب شود.'
+            ])->withInput();
+        }
 
         // Validation: بررسی ارتباط نوع پذیرش با دوره/همایش
         $admissionType = AdmissionType::find($validated['admission_type_id']);
