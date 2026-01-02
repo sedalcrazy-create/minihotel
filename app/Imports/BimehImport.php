@@ -26,7 +26,7 @@ class BimehImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
         foreach ($rows as $index => $row) {
             try {
                 // استخراج کد پرسنلی (کلید اصلی)
-                $employmentCode = $this->getFieldValue($row, ['کد_پرسنلی', 'کد_استخدام', 'employment_code', 'کد پرسنلی']);
+                $employmentCode = $this->getFieldValue($row, ['astkhdamy', 'استخدامی', 'کد_پرسنلی', 'کد_استخدام', 'employment_code', 'کد پرسنلی', 'id']);
 
                 if (empty($employmentCode)) {
                     $this->errors[] = "ردیف " . ($index + 2) . ": کد پرسنلی خالی است";
@@ -38,24 +38,24 @@ class BimehImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                 // استخراج داده‌ها
                 $data = [
                     'employment_code' => $employmentCode,
-                    'first_name' => $this->getFieldValue($row, ['نام', 'first_name']),
-                    'last_name' => $this->getFieldValue($row, ['نام_خانوادگی', 'نام خانوادگی', 'last_name']),
-                    'national_code' => $this->getFieldValue($row, ['کد_ملی', 'کد ملی', 'national_code']),
-                    'father_name' => $this->getFieldValue($row, ['نام_پدر', 'نام پدر', 'father_name']),
-                    'birth_year' => $this->getFieldValue($row, ['سال_تولد', 'سال تولد', 'birth_year']),
-                    'birth_month' => $this->getFieldValue($row, ['ماه_تولد', 'ماه تولد', 'birth_month']),
-                    'birth_day' => $this->getFieldValue($row, ['روز_تولد', 'روز تولد', 'birth_day']),
+                    'first_name' => $this->getFieldValue($row, ['nam', 'نام', 'first_name']),
+                    'last_name' => $this->getFieldValue($row, ['nam_khanoadgy', 'نام_خانوادگی', 'نام خانوادگی', 'last_name']),
+                    'national_code' => $this->cleanNationalCode($this->getFieldValue($row, ['kd_mly', 'کد_ملی', 'کد ملی', 'national_code'])),
+                    'father_name' => $this->getFieldValue($row, ['pdr', 'نام_پدر', 'نام پدر', 'پدر', 'father_name']),
+                    'birth_year' => $this->getFieldValue($row, ['sal_told', 'سال_تولد', 'سال تولد', 'birth_year']),
+                    'birth_month' => $this->getFieldValue($row, ['mah_told', 'ماه_تولد', 'ماه تولد', 'birth_month']),
+                    'birth_day' => $this->getFieldValue($row, ['roz_told', 'روز_تولد', 'روز تولد', 'birth_day']),
                     'gender' => $this->parseGender($row),
-                    'employment_status' => $this->getFieldValue($row, ['وضعیت_استخدام', 'وضعیت استخدام', 'employment_status']),
-                    'main_or_branch' => $this->getFieldValue($row, ['ستاد_شعبه', 'ستاد/شعبه', 'main_or_branch']),
-                    'department_code' => $this->getFieldValue($row, ['کد_دپارتمان', 'کد دپارتمان', 'department_code']),
-                    'department' => $this->getFieldValue($row, ['دپارتمان', 'department', 'اداره']),
-                    'service_location_code' => $this->getFieldValue($row, ['کد_محل_خدمت', 'کد محل خدمت', 'service_location_code']),
-                    'service_location' => $this->getFieldValue($row, ['محل_خدمت', 'محل خدمت', 'service_location']),
-                    'relation' => $this->getFieldValue($row, ['نسبت', 'relation']),
-                    'account_number' => $this->getFieldValue($row, ['شماره_حساب', 'شماره حساب', 'account_number']),
+                    'employment_status' => $this->getFieldValue($row, ['odaayt_khdmt', 'وضعیت_استخدام', 'وضعیت استخدام', 'وضعیت خدمت', 'employment_status']),
+                    'main_or_branch' => $this->getFieldValue($row, ['asly_fraay', 'ستاد_شعبه', 'ستاد/شعبه', 'اصلی-فرعی', 'اصلي-فرعي', 'main_or_branch']),
+                    'department_code' => $this->getFieldValue($row, ['kd_adarh_amor', 'کد_دپارتمان', 'کد دپارتمان', 'کد اداره امور', 'کد_اداره', 'department_code']),
+                    'department' => $this->getFieldValue($row, ['adarh_amor', 'دپارتمان', 'department', 'اداره امور', 'اداره', 'اداره_امور']),
+                    'service_location_code' => $this->getFieldValue($row, ['kd_mhl_khdmt', 'کد_محل_خدمت', 'کد محل خدمت', 'service_location_code']),
+                    'service_location' => $this->getFieldValue($row, ['mhl_khdmt', 'محل_خدمت', 'محل خدمت', 'service_location']),
+                    'relation' => $this->getFieldValue($row, ['nsbt', 'نسبت', 'relation']),
+                    'account_number' => $this->getFieldValue($row, ['shmarh_hsab', 'شماره_حساب', 'شماره حساب', 'account_number']),
                     'funkefalat' => $this->getFieldValue($row, ['فوق_العاده', 'فوق العاده', 'funkefalat']),
-                    'partner_employment_status' => $this->getFieldValue($row, ['وضعیت_استخدام_همسر', 'وضعیت استخدام همسر', 'partner_employment_status']),
+                    'partner_employment_status' => $this->getFieldValue($row, ['odaayt_khdmt_hmkar', 'وضعیت_استخدام_همسر', 'وضعیت استخدام همسر', 'partner_employment_status']),
 
                     // فیلدهای بیمه
                     'person_type' => $this->parsePersonType($row),
@@ -106,6 +106,22 @@ class BimehImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
     }
 
     /**
+     * پاک‌سازی کد ملی (حذف خط تیره و فضای خالی)
+     */
+    private function cleanNationalCode($nationalCode): ?string
+    {
+        if (empty($nationalCode)) {
+            return null;
+        }
+
+        // حذف خط تیره، فاصله و کاراکترهای غیرضروری
+        $cleaned = preg_replace('/[^0-9]/', '', $nationalCode);
+
+        // فقط 10 رقم اول
+        return substr($cleaned, 0, 10);
+    }
+
+    /**
      * جستجوی مقدار فیلد با نام‌های مختلف
      */
     private function getFieldValue($row, array $possibleNames)
@@ -123,7 +139,7 @@ class BimehImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
      */
     private function parseGender($row): string
     {
-        $gender = $this->getFieldValue($row, ['جنسیت', 'gender', 'sex']);
+        $gender = $this->getFieldValue($row, ['gnsyt', 'جنسیت', 'gender', 'sex']);
 
         if (empty($gender)) {
             return 'male';
@@ -134,10 +150,12 @@ class BimehImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
         // نقشه تبدیل
         $map = [
             'مرد' => 'male',
+            'مذکر' => 'male',
             'آقا' => 'male',
             'male' => 'male',
             'm' => 'male',
             'زن' => 'female',
+            'مونث' => 'female',
             'خانم' => 'female',
             'female' => 'female',
             'f' => 'female',
@@ -171,7 +189,7 @@ class BimehImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
      */
     private function parseColleagueStatus($row): string
     {
-        $value = $this->getFieldValue($row, ['وضعیت_خدمت_همکار', 'وضعیت همکار', 'colleague_status', 'وضعیت خدمت']);
+        $value = $this->getFieldValue($row, ['odaayt_khdmt_hmkar', 'وضعیت_خدمت_همکار', 'وضعیت همکار', 'colleague_status', 'وضعیت خدمت']);
 
         if (empty($value)) {
             return 'شاغل';
