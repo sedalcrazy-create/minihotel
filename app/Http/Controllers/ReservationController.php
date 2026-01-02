@@ -203,7 +203,7 @@ class ReservationController extends Controller
                 'room_id' => $validated['room_id'],
                 'check_in_date' => $validated['check_in_date'],
                 'check_out_date' => $validated['check_out_date'],
-                'status' => 'pending',
+                'status' => 'reserved',
                 'notes' => $validated['notes'] ?? null,
                 'created_by' => auth()->id(),
             ]);
