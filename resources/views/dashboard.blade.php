@@ -45,10 +45,8 @@
         @foreach($units as $unit)
             <div style="border: 2px solid {{ $unit->gender_restriction == 'female' ? '#ff69b4' : ($unit->gender_restriction == 'male' ? '#4a90d9' : '#e5e7eb') }}; border-radius: 8px; padding: 15px; background: {{ $unit->gender_restriction == 'female' ? 'linear-gradient(135deg, #fff0f5, #ffe4ec)' : ($unit->gender_restriction == 'male' ? 'linear-gradient(135deg, #f0f8ff, #e6f2ff)' : '#f9fafb') }}; position: relative; overflow: hidden;">
                 @if($unit->gender_restriction == 'female')
-                <!-- Kawaii decorations -->
                 <div style="position: absolute; top: 8px; right: 8px; font-size: 16px; opacity: 0.6; animation: float 3s ease-in-out infinite;">🌸</div>
                 <div style="position: absolute; bottom: 55px; right: 8px; font-size: 14px; opacity: 0.5; animation: float 2.5s ease-in-out infinite 1s;">✨</div>
-                <img src="/images/kawaii-sleep.gif" alt="kawaii" style="position: absolute; bottom: 5px; left: 5px; width: 60px; height: auto; opacity: 0.6; pointer-events: none;">
                 @endif
                 <div style="font-weight: bold; margin-bottom: 10px; color: {{ $unit->gender_restriction == 'female' ? '#d63384' : ($unit->gender_restriction == 'male' ? '#1e3a8a' : '#1e3a8a') }};">
                     واحد {{ $unit->number }}
@@ -257,27 +255,41 @@ function openBedModal(bedId, identifier, status, statusLabel, unitId, roomId) {
     currentBedId = bedId;
     currentRoomId = roomId;
 
-    document.getElementById('modalTitle').textContent = identifier;
-    document.getElementById('modalStatus').textContent = 'وضعیت: ' + statusLabel;
+    const modalTitle = document.getElementById('modalTitle');
+    const modalStatus = document.getElementById('modalStatus');
+    const statusForm = document.getElementById('statusForm');
+    const reserveBtn = document.getElementById('reserveBtn');
+    const maintenanceBtn = document.getElementById('maintenanceBtn');
+    const bedModal = document.getElementById('bedModal');
+
+    if (!modalTitle || !modalStatus || !statusForm || !reserveBtn || !maintenanceBtn || !bedModal) {
+        console.error('Modal elements not found');
+        return;
+    }
+
+    modalTitle.textContent = identifier;
+    modalStatus.textContent = 'وضعیت: ' + statusLabel;
 
     // تنظیم فرم تغییر وضعیت
-    document.getElementById('statusForm').action = '/beds/' + bedId + '/status';
+    statusForm.action = '/beds/' + bedId + '/status';
 
     // تنظیم لینک‌ها
-    document.getElementById('reserveBtn').href = '/reservations/create?bed_id=' + bedId + '&room_id=' + roomId;
-    document.getElementById('maintenanceBtn').href = '/maintenance/create?bed_id=' + bedId;
-    document.getElementById('cleaningBtn').href = '/cleaning?bed_id=' + bedId;
+    reserveBtn.href = '/reservations/create?bed_id=' + bedId + '&room_id=' + roomId;
+    maintenanceBtn.href = '/maintenance/create?bed_id=' + bedId;
 
     // نمایش مودال
-    document.getElementById('bedModal').style.display = 'flex';
+    bedModal.style.display = 'flex';
 
     // غیرفعال کردن دکمه وضعیت فعلی
     document.querySelectorAll('.status-btn').forEach(btn => {
         btn.disabled = false;
         btn.style.opacity = '1';
     });
-    document.querySelector('.status-btn[value="' + status + '"]').disabled = true;
-    document.querySelector('.status-btn[value="' + status + '"]').style.opacity = '0.5';
+    const currentBtn = document.querySelector('.status-btn[value="' + status + '"]');
+    if (currentBtn) {
+        currentBtn.disabled = true;
+        currentBtn.style.opacity = '0.5';
+    }
 }
 
 function closeBedModal() {
