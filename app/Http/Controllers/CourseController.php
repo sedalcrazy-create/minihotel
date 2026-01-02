@@ -27,11 +27,15 @@ class CourseController extends Controller
     {
         // تبدیل تاریخ شمسی به میلادی
         if ($request->start_date) {
-            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $request->start_date);
+            // تبدیل اعداد فارسی به انگلیسی
+            $startDate = $this->convertPersianToEnglish($request->start_date);
+            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $startDate);
             $request->merge(['start_date' => $jalali->toCarbon()->format('Y-m-d')]);
         }
         if ($request->end_date) {
-            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $request->end_date);
+            // تبدیل اعداد فارسی به انگلیسی
+            $endDate = $this->convertPersianToEnglish($request->end_date);
+            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $endDate);
             $request->merge(['end_date' => $jalali->toCarbon()->format('Y-m-d')]);
         }
 
@@ -79,11 +83,13 @@ class CourseController extends Controller
     {
         // تبدیل تاریخ شمسی به میلادی
         if ($request->start_date) {
-            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $request->start_date);
+            $startDate = $this->convertPersianToEnglish($request->start_date);
+            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $startDate);
             $request->merge(['start_date' => $jalali->toCarbon()->format('Y-m-d')]);
         }
         if ($request->end_date) {
-            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $request->end_date);
+            $endDate = $this->convertPersianToEnglish($request->end_date);
+            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $endDate);
             $request->merge(['end_date' => $jalali->toCarbon()->format('Y-m-d')]);
         }
 
@@ -144,5 +150,15 @@ class CourseController extends Controller
             ->get();
 
         return response()->json($courses);
+    }
+
+    /**
+     * تبدیل اعداد فارسی به انگلیسی
+     */
+    private function convertPersianToEnglish($string)
+    {
+        $persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        $english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        return str_replace($persian, $english, $string);
     }
 }
