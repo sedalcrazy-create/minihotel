@@ -218,14 +218,12 @@
                 <div style="display: flex; flex-direction: column; gap: 10px;">
                     <form id="checkInForm" method="POST" style="display: none;">
                         @csrf
-                        @method('PUT')
                         <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; text-align: center;">
                             ✅ چک‌این (ورود)
                         </button>
                     </form>
                     <form id="checkOutForm" method="POST" style="display: none;">
                         @csrf
-                        @method('PUT')
                         <button type="submit" class="btn btn-secondary" style="width: 100%; padding: 12px; text-align: center; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
                             🚪 چک‌اوت (خروج)
                         </button>
