@@ -30,11 +30,15 @@
             <select name="course_id" id="course_id" class="form-control">
                 <option value="">انتخاب کنید...</option>
                 @foreach($courses as $course)
+                    @php
+                        $startJalali = \Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::parse($course->start_date))->format('Y/m/d');
+                        $endJalali = \Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::parse($course->end_date))->format('Y/m/d');
+                    @endphp
                     <option value="{{ $course->id }}"
-                            data-start="{{ $course->start_date }}"
-                            data-end="{{ $course->end_date }}"
+                            data-start="{{ $startJalali }}"
+                            data-end="{{ $endJalali }}"
                             {{ old('course_id') == $course->id ? 'selected' : '' }}>
-                        {{ $course->name }} ({{ $course->code }}) - {{ $course->start_date }} تا {{ $course->end_date }}
+                        {{ $course->name }} ({{ $course->code }}) - {{ $startJalali }} تا {{ $endJalali }}
                     </option>
                 @endforeach
             </select>
@@ -47,11 +51,15 @@
             <select name="conference_id" id="conference_id" class="form-control">
                 <option value="">انتخاب کنید...</option>
                 @foreach($conferences as $conference)
+                    @php
+                        $confStartJalali = \Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::parse($conference->start_date))->format('Y/m/d');
+                        $confEndJalali = \Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::parse($conference->end_date))->format('Y/m/d');
+                    @endphp
                     <option value="{{ $conference->id }}"
-                            data-start="{{ $conference->start_date }}"
-                            data-end="{{ $conference->end_date }}"
+                            data-start="{{ $confStartJalali }}"
+                            data-end="{{ $confEndJalali }}"
                             {{ old('conference_id') == $conference->id ? 'selected' : '' }}>
-                        {{ $conference->name }} ({{ $conference->code }}) - {{ $conference->start_date }} تا {{ $conference->end_date }}
+                        {{ $conference->name }} ({{ $conference->code }}) - {{ $confStartJalali }} تا {{ $confEndJalali }}
                     </option>
                 @endforeach
             </select>
@@ -236,16 +244,29 @@
                 externalSection.style.display = 'none';
                 personnelSelect.required = true;
                 guestNameInput.required = false;
+                // Disable external guest fields
+                guestNameInput.disabled = true;
+                document.getElementById('guest_phone').disabled = true;
+                document.getElementById('guest_gender').disabled = true;
             } else {
                 personnelSection.style.display = 'none';
                 externalSection.style.display = 'block';
                 personnelSelect.required = false;
                 guestNameInput.required = true;
+                // Enable external guest fields
+                guestNameInput.disabled = false;
+                document.getElementById('guest_phone').disabled = false;
+                document.getElementById('guest_gender').disabled = false;
+                // Disable personnel field
+                personnelSelect.disabled = true;
             }
         }
 
         personnelRadio.addEventListener('change', updateGuestSections);
         externalRadio.addEventListener('change', updateGuestSections);
+
+        // اجرای اولیه
+        updateGuestSections();
 
         // Load beds when room is selected
         function loadBeds() {
