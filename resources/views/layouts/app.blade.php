@@ -490,29 +490,69 @@
         .pagination {
             display: flex;
             justify-content: center;
-            gap: 5px;
-            margin-top: 20px;
+            align-items: center;
+            gap: 8px;
+            margin-top: 30px;
+            flex-wrap: wrap;
         }
 
-        .pagination a, .pagination span {
-            padding: 8px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
+        .pagination nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pagination .flex {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pagination a,
+        .pagination span {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 40px;
+            padding: 0 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
             text-decoration: none;
             color: #374151;
-            transition: all 0.3s;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         .pagination a:hover {
-            background: #f96c08;
+            background: linear-gradient(135deg, #f96c08 0%, #e37415 100%);
             color: white;
             border-color: #f96c08;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(249, 108, 8, 0.3);
         }
 
-        .pagination .active {
-            background: #f96c08;
+        .pagination .relative span[aria-current="page"],
+        .pagination span.current,
+        .pagination span[aria-current="page"] {
+            background: linear-gradient(135deg, #f96c08 0%, #e37415 100%);
             color: white;
             border-color: #f96c08;
+            box-shadow: 0 4px 12px rgba(249, 108, 8, 0.4);
+        }
+
+        .pagination span.disabled,
+        .pagination span[aria-disabled="true"] {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: #f3f4f6;
+        }
+
+        .pagination svg {
+            width: 16px;
+            height: 16px;
         }
 
         /* Responsive */
