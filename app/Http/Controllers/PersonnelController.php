@@ -164,108 +164,139 @@ class PersonnelController extends Controller
         $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        // راهنمای استفاده - سطر اول
-        $sheet->setCellValue('A1', '📋 راهنمای استفاده از فایل ورود اکسل پرسنل - اداره کل آموزش بانک ملی');
-        $sheet->mergeCells('A1:S1');
-        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(14);
-        $sheet->getStyle('A1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-            ->getStartColor()->setARGB('FFf96c08');
-        $sheet->getStyle('A1')->getFont()->getColor()->setARGB('FFFFFFFF');
-        $sheet->getRowDimension(1)->setRowHeight(30);
-
-        // توضیحات - سطرهای 2 تا 6
-        $instructions = [
-            ['⚠️ نکات مهم:', ''],
-            ['1️⃣ ستون‌های با علامت * الزامی هستند', ''],
-            ['2️⃣ کد پرسنلی و کد ملی باید یکتا باشند', ''],
-            ['3️⃣ کد ملی باید دقیقاً 10 رقم باشد', ''],
-            ['4️⃣ وضعیت استخدام فقط می‌تواند: رسمی، قراردادی یا موقت باشد', ''],
-            ['5️⃣ سطر 8 به بعد را با اطلاعات پرسنل پر کنید', ''],
-        ];
-
-        $row = 2;
-        foreach ($instructions as $instruction) {
-            $sheet->setCellValue('A' . $row, $instruction[0]);
-            $sheet->mergeCells('A' . $row . ':S' . $row);
-            $sheet->getStyle('A' . $row)->getFont()->setBold(true);
-            $sheet->getStyle('A' . $row)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                ->getStartColor()->setARGB('FFFFF3E0');
-            $row++;
-        }
-
-        // سربرگ - سطر 8
+        // سربرگ - سطر 1
         $headers = [
-            'کد_پرسنلی *',
-            'نام *',
-            'نام_خانوادگی *',
-            'کد_ملی *',
+            'کد_پرسنلی',
+            'نام',
+            'نام_خانوادگی',
+            'کد_ملی',
             'نام_پدر',
-            'جنسیت *',
-            'سال_تولد *',
-            'ماه_تولد *',
-            'روز_تولد *',
-            'وضعیت_استخدام *',
+            'جنسیت',
+            'سال_تولد',
+            'ماه_تولد',
+            'روز_تولد',
+            'وضعیت_استخدام',
             'ستاد_شعبه',
             'کد_دپارتمان',
-            'دپارتمان',
             'کد_محل_خدمت',
-            'محل_خدمت',
             'نسبت',
             'شماره_حساب',
             'فوق_العاده',
-            'وضعیت_استخدام_همسر',
         ];
 
         $col = 'A';
         foreach ($headers as $header) {
-            $sheet->setCellValue($col . '8', $header);
-            $sheet->getStyle($col . '8')->getFont()->setBold(true);
-            $sheet->getStyle($col . '8')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                ->getStartColor()->setARGB('FFe37415');
-            $sheet->getStyle($col . '8')->getFont()->getColor()->setARGB('FFFFFFFF');
-            $sheet->getColumnDimension($col)->setWidth(20);
+            $sheet->setCellValue($col . '1', $header);
+            $sheet->getStyle($col . '1')->getFont()->setBold(true);
+            $sheet->getStyle($col . '1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('FFf96c08');
+            $sheet->getStyle($col . '1')->getFont()->getColor()->setARGB('FFFFFFFF');
+            $sheet->getColumnDimension($col)->setWidth(18);
             $col++;
         }
 
-        // نمونه داده - سطر 9
+        // نمونه داده - سطرهای 2 و 3
         $sampleData = [
-            '12345',
-            'علی',
-            'احمدی',
-            '1234567890',
-            'محمد',
-            'male',
-            '1370',
-            '5',
-            '15',
-            'رسمی',
-            'ستاد',
-            'EDU01',
-            'آموزش',
-            'LOC01',
-            'مرکز آموزش تهران',
-            'خود',
-            '1234567890123456',
-            'مبلغ نمونه',
-            'شاغل',
+            ['12345', 'علی', 'احمدی', '1234567890', 'محمد', 'male', '1370', '5', '15', 'رسمی', 'ستاد', '290', '1', 'کارمند', '1234567890123456', ''],
+            ['12346', 'فاطمه', 'محمدی', '0987654321', 'حسن', 'female', '1375', '3', '20', 'پیمانی', 'شعبه', '100', '10', 'کارمند', '', ''],
         ];
 
-        $col = 'A';
+        $rowNum = 2;
         foreach ($sampleData as $data) {
-            $sheet->setCellValue($col . '9', $data);
-            $sheet->getStyle($col . '9')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                ->getStartColor()->setARGB('FFE8F5E9');
-            $col++;
+            $col = 'A';
+            foreach ($data as $value) {
+                $sheet->setCellValue($col . $rowNum, $value);
+                $sheet->getStyle($col . $rowNum)->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                    ->getStartColor()->setARGB('FFE8F5E9');
+                $col++;
+            }
+            $rowNum++;
         }
 
         // تنظیمات کلی
-        $sheet->getStyle('A1:S9')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
-        $sheet->getStyle('A8:S9')->getBorders()->getAllBorders()
+        $sheet->getStyle('A1:P3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+        $sheet->getStyle('A1:P3')->getBorders()->getAllBorders()
             ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
 
-        $fileName = 'template-personnel-import.xlsx';
+        $fileName = 'template-personnel.xlsx';
+        $temp_file = tempnam(sys_get_temp_dir(), $fileName);
+
+        $writer->save($temp_file);
+
+        return response()->download($temp_file, $fileName)->deleteFileAfterSend(true);
+    }
+
+    public function updateTemplate()
+    {
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // سربرگ
+        $headers = [
+            'کد_پرسنلی',
+            'نام',
+            'نام_خانوادگی',
+            'کد_ملی',
+            'نام_پدر',
+            'جنسیت',
+            'سال_تولد',
+            'ماه_تولد',
+            'روز_تولد',
+            'وضعیت_استخدام',
+            'ستاد_شعبه',
+            'کد_دپارتمان',
+            'کد_محل_خدمت',
+            'نسبت',
+            'شماره_حساب',
+            'فوق_العاده',
+        ];
+
+        $col = 'A';
+        foreach ($headers as $header) {
+            $sheet->setCellValue($col . '1', $header);
+            $sheet->getStyle($col . '1')->getFont()->setBold(true);
+            $sheet->getStyle($col . '1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('FFf96c08');
+            $sheet->getStyle($col . '1')->getFont()->getColor()->setARGB('FFFFFFFF');
+            $sheet->getColumnDimension($col)->setWidth(18);
+            $col++;
+        }
+
+        // داده‌های پرسنل فعلی
+        $personnel = Personnel::where('is_active', true)->orderBy('employment_code')->get();
+
+        $rowNum = 2;
+        foreach ($personnel as $person) {
+            $sheet->setCellValue('A' . $rowNum, $person->employment_code);
+            $sheet->setCellValue('B' . $rowNum, $person->first_name);
+            $sheet->setCellValue('C' . $rowNum, $person->last_name);
+            $sheet->setCellValue('D' . $rowNum, $person->national_code);
+            $sheet->setCellValue('E' . $rowNum, $person->father_name);
+            $sheet->setCellValue('F' . $rowNum, $person->gender);
+            $sheet->setCellValue('G' . $rowNum, $person->birth_year);
+            $sheet->setCellValue('H' . $rowNum, $person->birth_month);
+            $sheet->setCellValue('I' . $rowNum, $person->birth_day);
+            $sheet->setCellValue('J' . $rowNum, $person->employment_status);
+            $sheet->setCellValue('K' . $rowNum, $person->main_or_branch);
+            $sheet->setCellValue('L' . $rowNum, $person->department_code);
+            $sheet->setCellValue('M' . $rowNum, $person->service_location_code);
+            $sheet->setCellValue('N' . $rowNum, $person->relation);
+            $sheet->setCellValue('O' . $rowNum, $person->account_number);
+            $sheet->setCellValue('P' . $rowNum, $person->funkefalat);
+            $rowNum++;
+        }
+
+        // تنظیمات کلی
+        $lastRow = $rowNum - 1;
+        $sheet->getStyle('A1:P' . $lastRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+        $sheet->getStyle('A1:P' . $lastRow)->getBorders()->getAllBorders()
+            ->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+
+        $fileName = 'personnel-update-' . date('Y-m-d') . '.xlsx';
         $temp_file = tempnam(sys_get_temp_dir(), $fileName);
 
         $writer->save($temp_file);

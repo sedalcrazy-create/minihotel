@@ -6,8 +6,8 @@
 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
     <h2>لیست پرسنل سازمان</h2>
     <div style="display: flex; gap: 10px;">
-        <a href="{{ route('personnel.template') }}" class="btn btn-secondary" title="دانلود فایل نمونه با راهنما">📄 تمپلیت اکسل</a>
-        <a href="{{ route('personnel.export') }}" class="btn btn-success">📥 خروجی اکسل</a>
+        <a href="{{ route('personnel.template') }}" class="btn btn-secondary" title="تمپلیت خالی با نمونه داده">📄 تمپلیت</a>
+        <a href="{{ route('personnel.update-template') }}" class="btn btn-secondary" title="دانلود داده‌های فعلی برای ویرایش" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white;">📝 تمپلیت اپدیت</a>
         <button onclick="document.getElementById('importFile').click()" class="btn btn-primary">📤 ورود اکسل</button>
         <form id="importForm" action="{{ route('personnel.import') }}" method="POST" enctype="multipart/form-data" style="display: none;">
             @csrf
@@ -26,12 +26,11 @@
     <div style="display: flex; align-items: center; gap: 15px;">
         <div style="font-size: 36px;">📋</div>
         <div>
-            <h3 style="margin-bottom: 8px; color: #f96c08;">راهنمای استفاده از فایل اکسل</h3>
-            <p style="margin: 5px 0; color: #6b7280;">📄 ابتدا <strong>تمپلیت اکسل</strong> را دانلود کنید - این فایل شامل راهنمای کامل و نمونه داده است</p>
-            <p style="margin: 5px 0; color: #6b7280;">✏️ فایل را با اطلاعات پرسنل پر کنید (ستون‌های الزامی با علامت * مشخص شده‌اند)</p>
-            <p style="margin: 5px 0; color: #6b7280;">📤 فایل پر شده را از طریق دکمه <strong>ورود اکسل</strong> آپلود کنید</p>
-            <p style="margin: 5px 0; color: #6b7280;">🏦 برای همگام‌سازی ماهانه با فایل بیمه از دکمه <strong>همگام‌سازی بیمه</strong> استفاده کنید (فقط فایل‌های Bimeh_YYYYMMDD.xlsx)</p>
-            <p style="margin: 5px 0; color: #6b7280;">📥 برای دانلود لیست فعلی پرسنل از دکمه <strong>خروجی اکسل</strong> استفاده کنید</p>
+            <h3 style="margin-bottom: 8px; color: #f96c08;">راهنمای کار با فایل اکسل</h3>
+            <p style="margin: 5px 0; color: #6b7280;">📄 <strong>تمپلیت:</strong> فایل خالی با نمونه داده - برای افزودن پرسنل جدید</p>
+            <p style="margin: 5px 0; color: #6b7280;">📝 <strong>تمپلیت اپدیت:</strong> دانلود تمام داده‌های فعلی - برای ویرایش دسته‌جمعی</p>
+            <p style="margin: 5px 0; color: #6b7280;">📤 <strong>ورود اکسل:</strong> آپلود فایل - هم برای افزودن و هم برای بروزرسانی</p>
+            <p style="margin: 5px 0; color: #6b7280;">🏦 <strong>همگام‌سازی بیمه:</strong> همگام‌سازی ماهانه با فایل بیمه (Bimeh_*.xlsx)</p>
         </div>
     </div>
 </div>

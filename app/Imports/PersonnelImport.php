@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Models\Personnel;
 use App\Models\ActivityLog;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
@@ -24,16 +25,31 @@ class PersonnelImport implements ToCollection, WithHeadingRow
                 'father_name' => $this->getFieldValue($row, ['نام_پدر', 'نام پدر', 'father_name']),
                 'relation' => $this->getFieldValue($row, ['نسبت', 'relation']),
                 'account_number' => $this->getFieldValue($row, ['شماره_حساب', 'شماره حساب', 'account_number']),
-                'service_location_code' => $this->getFieldValue($row, ['کد_محل_خدمت', 'کد محل خدمت', 'service_location_code']),
-                'service_location' => $this->getFieldValue($row, ['محل_خدمت', 'محل خدمت', 'service_location']),
-                'department_code' => $this->getFieldValue($row, ['کد_دپارتمان', 'کد دپارتمان', 'department_code']),
-                'department' => $this->getFieldValue($row, ['دپارتمان', 'department']),
                 'employment_status' => $this->getFieldValue($row, ['وضعیت_استخدام', 'وضعیت استخدام', 'employment_status']),
                 'main_or_branch' => $this->getFieldValue($row, ['ستاد_شعبه', 'ستاد/شعبه', 'main_or_branch']),
                 'funkefalat' => $this->getFieldValue($row, ['فوق_العاده', 'فوق العاده', 'funkefalat']),
-                'partner_employment_status' => $this->getFieldValue($row, ['وضعیت_استخدام_همسر', 'وضعیت استخدام همسر', 'partner_employment_status']),
                 'gender' => $this->parseGender($row),
             ];
+
+            // Lookup محل خدمت از روی کد
+            $serviceLocationCode = $this->getFieldValue($row, ['کد_محل_خدمت', 'کد محل خدمت', 'service_location_code']);
+            if ($serviceLocationCode) {
+                $data['service_location_code'] = $serviceLocationCode;
+                $serviceLocation = DB::table('service_locations')->where('code', $serviceLocationCode)->first();
+                if ($serviceLocation) {
+                    $data['service_location'] = $serviceLocation->name;
+                }
+            }
+
+            // Lookup دپارتمان از روی کد
+            $departmentCode = $this->getFieldValue($row, ['کد_دپارتمان', 'کد دپارتمان', 'department_code']);
+            if ($departmentCode) {
+                $data['department_code'] = $departmentCode;
+                $department = DB::table('departments')->where('code', $departmentCode)->first();
+                if ($department) {
+                    $data['department'] = $department->name;
+                }
+            }
 
             // حذف مقادیر null
             $data = array_filter($data, function($value) {
