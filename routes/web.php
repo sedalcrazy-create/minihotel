@@ -36,10 +36,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/personnel/sync-bimeh', [\App\Http\Controllers\PersonnelController::class, 'syncFromBimeh'])->name('personnel.sync-bimeh');
     Route::resource('personnel', \App\Http\Controllers\PersonnelController::class);
 
-    // Reservations
-    Route::resource('reservations', ReservationController::class);
+    // Reservations - custom routes before resource
     Route::post('/reservations/{reservation}/check-in', [ReservationController::class, 'checkIn'])->name('reservations.check-in');
     Route::post('/reservations/{reservation}/check-out', [ReservationController::class, 'checkOut'])->name('reservations.check-out');
+    Route::resource('reservations', ReservationController::class);
 
     // Guests
     Route::resource('guests', GuestController::class);

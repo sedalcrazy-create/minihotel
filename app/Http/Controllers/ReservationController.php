@@ -244,7 +244,7 @@ class ReservationController extends Controller
 
     public function checkIn(Reservation $reservation)
     {
-        if ($reservation->status !== 'pending' && $reservation->status !== 'confirmed') {
+        if (!in_array($reservation->status, ['pending', 'confirmed', 'reserved'])) {
             return back()->with('error', 'این رزرو قابل چک‌این نیست.');
         }
 
