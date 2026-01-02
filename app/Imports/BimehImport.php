@@ -78,7 +78,7 @@ class BimehImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                     // فیلدهای بیمه
                     'person_type' => $this->parsePersonType($row),
                     'colleague_status' => $this->parseColleagueStatus($row),
-                    'last_sync_date' => now()->toDateString(),
+                    'last_sync_date' => date('Y-m-d'),
                 ];
 
                 // حذف مقادیر خالی
@@ -109,7 +109,7 @@ class BimehImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                 ->where('is_active', true)
                 ->update([
                     'is_active' => false,
-                    'last_sync_date' => now()->toDateString(),
+                    'last_sync_date' => date('Y-m-d'),
                 ]);
             $this->deactivated = $deactivatedCount;
         }
