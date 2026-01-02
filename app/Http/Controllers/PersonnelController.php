@@ -58,7 +58,6 @@ class PersonnelController extends Controller
             'relation' => 'nullable|string|max:50',
             'account_number' => 'nullable|string|max:50',
             'funkefalat' => 'nullable|string',
-            'partner_employment_status' => 'nullable|string|max:100',
         ]);
 
         DB::beginTransaction();
@@ -110,7 +109,6 @@ class PersonnelController extends Controller
             'relation' => 'nullable|string|max:50',
             'account_number' => 'nullable|string|max:50',
             'funkefalat' => 'nullable|string',
-            'partner_employment_status' => 'nullable|string|max:100',
         ]);
 
         DB::beginTransaction();

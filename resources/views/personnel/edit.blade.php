@@ -140,10 +140,6 @@
                     <input type="text" name="funkefalat" id="funkefalat" class="form-control" value="{{ old('funkefalat', $personnel->funkefalat) }}">
                 </div>
 
-                <div class="form-group">
-                    <label for="partner_employment_status">وضعیت استخدام همسر</label>
-                    <input type="text" name="partner_employment_status" id="partner_employment_status" class="form-control" value="{{ old('partner_employment_status', $personnel->partner_employment_status) }}">
-                </div>
             </div>
         </div>
 

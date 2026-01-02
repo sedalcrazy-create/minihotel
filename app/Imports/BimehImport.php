@@ -55,7 +55,6 @@ class BimehImport implements ToCollection, WithHeadingRow, WithChunkReading, Wit
                     'relation' => $this->getFieldValue($row, ['nsbt', 'نسبت', 'relation']),
                     'account_number' => $this->getFieldValue($row, ['shmarh_hsab', 'شماره_حساب', 'شماره حساب', 'account_number']),
                     'funkefalat' => $this->getFieldValue($row, ['فوق_العاده', 'فوق العاده', 'funkefalat']),
-                    'partner_employment_status' => $this->getFieldValue($row, ['odaayt_khdmt_hmkar', 'وضعیت_استخدام_همسر', 'وضعیت استخدام همسر', 'partner_employment_status']),
 
                     // فیلدهای بیمه
                     'person_type' => $this->parsePersonType($row),
