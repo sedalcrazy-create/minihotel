@@ -82,12 +82,14 @@
                                         'under_maintenance' => 'در تعمیر',
                                         default => 'نامشخص'
                                     };
+                                    // پیدا کردن رزرو فعال برای این تخت
+                                    $activeReservation = $bed->reservations->first();
                                 @endphp
                                 <div
                                     class="bed-card"
                                     style="background: {{ $color }}; color: white; padding: 8px; border-radius: 5px; text-align: center; font-size: 11px; cursor: pointer; transition: all 0.2s;"
                                     title="{{ $bed->identifier }} - {{ $statusLabel }}"
-                                    onclick="openBedModal({{ $bed->id }}, '{{ $bed->identifier }}', '{{ $bed->status }}', '{{ $statusLabel }}', {{ $unit->id }}, {{ $room->id }})"
+                                    onclick="openBedModal({{ $bed->id }}, '{{ $bed->identifier }}', '{{ $bed->status }}', '{{ $statusLabel }}', {{ $unit->id }}, {{ $room->id }}, {{ $activeReservation ? $activeReservation->id : 'null' }}, '{{ $activeReservation ? $activeReservation->status : '' }}', '{{ $activeReservation ? addslashes($activeReservation->guest_name) : '' }}')"
                                 >
                                     تخت {{ $bed->number }}
                                 </div>
@@ -200,7 +202,7 @@
             <div style="border-top: 1px solid #e5e7eb; padding-top: 20px;">
                 <label style="font-weight: bold; display: block; margin-bottom: 10px; color: #374151;">عملیات:</label>
                 <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <a id="reserveBtn" href="#" class="btn btn-primary" style="text-align: center; padding: 12px;">
+                    <a id="reserveBtn" href="#" class="btn btn-primary" style="text-align: center; padding: 12px; display: none;">
                         📅 ثبت رزرو جدید
                     </a>
                     <a id="maintenanceBtn" href="#" class="btn btn-secondary" style="text-align: center; padding: 12px;">
@@ -209,10 +211,29 @@
                 </div>
             </div>
 
-            <!-- نمایش رزرو فعال -->
+            <!-- نمایش رزرو فعال و دکمه‌های چک‌این/چک‌اوت -->
             <div id="activeReservationSection" style="display: none; border-top: 1px solid #e5e7eb; padding-top: 20px; margin-top: 20px;">
                 <label style="font-weight: bold; display: block; margin-bottom: 10px; color: #374151;">رزرو فعال:</label>
-                <div id="activeReservationInfo" style="background: #fef3c7; padding: 15px; border-radius: 8px; font-size: 13px;"></div>
+                <div id="activeReservationInfo" style="background: #fef3c7; padding: 15px; border-radius: 8px; font-size: 13px; margin-bottom: 15px;"></div>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <form id="checkInForm" method="POST" style="display: none;">
+                        @csrf
+                        @method('PUT')
+                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; text-align: center;">
+                            ✅ چک‌این (ورود)
+                        </button>
+                    </form>
+                    <form id="checkOutForm" method="POST" style="display: none;">
+                        @csrf
+                        @method('PUT')
+                        <button type="submit" class="btn btn-secondary" style="width: 100%; padding: 12px; text-align: center; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                            🚪 چک‌اوت (خروج)
+                        </button>
+                    </form>
+                    <a id="viewReservationBtn" href="#" class="btn btn-secondary" style="text-align: center; padding: 12px; display: none;">
+                        👁️ مشاهده جزئیات رزرو
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -251,7 +272,7 @@
 let currentBedId = null;
 let currentRoomId = null;
 
-function openBedModal(bedId, identifier, status, statusLabel, unitId, roomId) {
+function openBedModal(bedId, identifier, status, statusLabel, unitId, roomId, reservationId, reservationStatus, guestName) {
     currentBedId = bedId;
     currentRoomId = roomId;
 
@@ -261,6 +282,11 @@ function openBedModal(bedId, identifier, status, statusLabel, unitId, roomId) {
     const reserveBtn = document.getElementById('reserveBtn');
     const maintenanceBtn = document.getElementById('maintenanceBtn');
     const bedModal = document.getElementById('bedModal');
+    const activeReservationSection = document.getElementById('activeReservationSection');
+    const activeReservationInfo = document.getElementById('activeReservationInfo');
+    const checkInForm = document.getElementById('checkInForm');
+    const checkOutForm = document.getElementById('checkOutForm');
+    const viewReservationBtn = document.getElementById('viewReservationBtn');
 
     if (!modalTitle || !modalStatus || !statusForm || !reserveBtn || !maintenanceBtn || !bedModal) {
         console.error('Modal elements not found');
@@ -276,6 +302,39 @@ function openBedModal(bedId, identifier, status, statusLabel, unitId, roomId) {
     // تنظیم لینک‌ها
     reserveBtn.href = '/reservations/create?bed_id=' + bedId + '&room_id=' + roomId;
     maintenanceBtn.href = '/maintenance/create?bed_id=' + bedId;
+
+    // مدیریت نمایش دکمه‌ها بر اساس وضعیت رزرو
+    if (reservationId && reservationId !== null) {
+        // اگر رزرو فعال داریم
+        activeReservationSection.style.display = 'block';
+        reserveBtn.style.display = 'none';
+
+        // نمایش اطلاعات رزرو
+        activeReservationInfo.innerHTML = '<strong>مهمان:</strong> ' + guestName + '<br><strong>وضعیت:</strong> ' + (reservationStatus === 'reserved' ? 'رزرو شده' : 'چک‌این شده');
+
+        // نمایش دکمه مشاهده رزرو
+        viewReservationBtn.style.display = 'block';
+        viewReservationBtn.href = '/reservations/' + reservationId;
+
+        // نمایش دکمه‌های مناسب بر اساس وضعیت رزرو
+        if (reservationStatus === 'reserved') {
+            // اگر فقط رزرو شده، دکمه چک‌این نمایش بده
+            checkInForm.style.display = 'block';
+            checkInForm.action = '/reservations/' + reservationId + '/check-in';
+            checkOutForm.style.display = 'none';
+        } else if (reservationStatus === 'checked_in') {
+            // اگر چک‌این شده، دکمه چک‌اوت نمایش بده
+            checkInForm.style.display = 'none';
+            checkOutForm.style.display = 'block';
+            checkOutForm.action = '/reservations/' + reservationId + '/check-out';
+        }
+    } else {
+        // اگر رزرو فعال نداریم، دکمه رزرو جدید نمایش بده
+        activeReservationSection.style.display = 'none';
+        reserveBtn.style.display = 'block';
+        checkInForm.style.display = 'none';
+        checkOutForm.style.display = 'none';
+    }
 
     // نمایش مودال
     bedModal.style.display = 'flex';
