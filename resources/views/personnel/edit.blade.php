@@ -118,7 +118,16 @@
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div class="form-group">
                     <label for="relation">نسبت</label>
-                    <input type="text" name="relation" id="relation" class="form-control" value="{{ old('relation', $personnel->relation) }}">
+                    <select name="relation" id="relation" class="form-control">
+                        <option value="">انتخاب کنید...</option>
+                        <option value="کارمند" {{ old('relation', $personnel->relation) == 'کارمند' ? 'selected' : '' }}>کارمند</option>
+                        <option value="همسر" {{ old('relation', $personnel->relation) == 'همسر' ? 'selected' : '' }}>همسر</option>
+                        <option value="فرزند" {{ old('relation', $personnel->relation) == 'فرزند' ? 'selected' : '' }}>فرزند</option>
+                        <option value="پدر" {{ old('relation', $personnel->relation) == 'پدر' ? 'selected' : '' }}>پدر</option>
+                        <option value="مادر" {{ old('relation', $personnel->relation) == 'مادر' ? 'selected' : '' }}>مادر</option>
+                        <option value="برادر" {{ old('relation', $personnel->relation) == 'برادر' ? 'selected' : '' }}>برادر</option>
+                        <option value="خواهر" {{ old('relation', $personnel->relation) == 'خواهر' ? 'selected' : '' }}>خواهر</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
