@@ -27,10 +27,12 @@ class ConferenceController extends Controller
     {
         // تبدیل تاریخ شمسی به میلادی
         if ($request->start_date) {
-            $request->merge(['start_date' => verta()->parse($request->start_date)->datetime()->format('Y-m-d')]);
+            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $request->start_date);
+            $request->merge(['start_date' => $jalali->toCarbon()->format('Y-m-d')]);
         }
         if ($request->end_date) {
-            $request->merge(['end_date' => verta()->parse($request->end_date)->datetime()->format('Y-m-d')]);
+            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $request->end_date);
+            $request->merge(['end_date' => $jalali->toCarbon()->format('Y-m-d')]);
         }
 
         $validated = $request->validate([
@@ -77,10 +79,12 @@ class ConferenceController extends Controller
     {
         // تبدیل تاریخ شمسی به میلادی
         if ($request->start_date) {
-            $request->merge(['start_date' => verta()->parse($request->start_date)->datetime()->format('Y-m-d')]);
+            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $request->start_date);
+            $request->merge(['start_date' => $jalali->toCarbon()->format('Y-m-d')]);
         }
         if ($request->end_date) {
-            $request->merge(['end_date' => verta()->parse($request->end_date)->datetime()->format('Y-m-d')]);
+            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $request->end_date);
+            $request->merge(['end_date' => $jalali->toCarbon()->format('Y-m-d')]);
         }
 
         $validated = $request->validate([
