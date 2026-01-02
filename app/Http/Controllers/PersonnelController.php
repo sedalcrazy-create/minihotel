@@ -13,11 +13,21 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class PersonnelController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $personnel = Personnel::where('is_active', true)
-            ->orderBy('first_name')
-            ->paginate(20);
+        $query = Personnel::where('is_active', true);
+
+        // Search functionality
+        if ($search = $request->get('search')) {
+            $query->where(function($q) use ($search) {
+                $q->where('employment_code', 'LIKE', "%{$search}%")
+                  ->orWhere('national_code', 'LIKE', "%{$search}%")
+                  ->orWhere('first_name', 'LIKE', "%{$search}%")
+                  ->orWhere('last_name', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $personnel = $query->orderBy('first_name')->paginate(20);
 
         return view('personnel.index', compact('personnel'));
     }

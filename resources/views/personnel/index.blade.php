@@ -36,6 +36,32 @@
     </div>
 </div>
 
+<div class="card" style="margin-bottom: 20px;">
+    <form method="GET" action="{{ route('personnel.index') }}" style="display: flex; gap: 10px; align-items: center;">
+        <div style="flex: 1; position: relative;">
+            <input
+                type="text"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="🔍 جستجو با کد پرسنلی، کد ملی یا نام و نام خانوادگی..."
+                style="width: 100%; padding: 12px 45px 12px 15px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 14px; transition: all 0.3s;"
+                onfocus="this.style.borderColor='#f96c08'; this.style.boxShadow='0 0 0 3px rgba(249, 108, 8, 0.1)'"
+                onblur="this.style.borderColor='#e5e7eb'; this.style.boxShadow='none'"
+            >
+            @if(request('search'))
+                <a href="{{ route('personnel.index') }}" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #9ca3af; text-decoration: none; font-size: 20px;" title="پاک کردن جستجو">×</a>
+            @endif
+        </div>
+        <button type="submit" class="btn btn-primary" style="white-space: nowrap;">جستجو</button>
+    </form>
+    @if(request('search'))
+        <div style="margin-top: 15px; padding: 10px 15px; background: #fef3c7; border-right: 3px solid #f59e0b; border-radius: 8px; font-size: 14px;">
+            نتایج جستجو برای: <strong>{{ request('search') }}</strong>
+            ({{ $personnel->total() }} مورد یافت شد)
+        </div>
+    @endif
+</div>
+
 <div class="card">
     @if($personnel->count() > 0)
         <table>
@@ -71,7 +97,7 @@
         </table>
 
         <div class="pagination">
-            {{ $personnel->links() }}
+            {{ $personnel->appends(request()->query())->links() }}
         </div>
     @else
         <p style="text-align: center; color: #6b7280; padding: 40px;">هیچ پرسنلی ثبت نشده است.</p>
