@@ -29,13 +29,13 @@ class CourseController extends Controller
         if ($request->start_date) {
             // تبدیل اعداد فارسی به انگلیسی
             $startDate = $this->convertPersianToEnglish($request->start_date);
-            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $startDate);
+            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y/m/d', $startDate);
             $request->merge(['start_date' => $jalali->toCarbon()->format('Y-m-d')]);
         }
         if ($request->end_date) {
             // تبدیل اعداد فارسی به انگلیسی
             $endDate = $this->convertPersianToEnglish($request->end_date);
-            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $endDate);
+            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y/m/d', $endDate);
             $request->merge(['end_date' => $jalali->toCarbon()->format('Y-m-d')]);
         }
 
@@ -84,12 +84,12 @@ class CourseController extends Controller
         // تبدیل تاریخ شمسی به میلادی
         if ($request->start_date) {
             $startDate = $this->convertPersianToEnglish($request->start_date);
-            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $startDate);
+            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y/m/d', $startDate);
             $request->merge(['start_date' => $jalali->toCarbon()->format('Y-m-d')]);
         }
         if ($request->end_date) {
             $endDate = $this->convertPersianToEnglish($request->end_date);
-            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y-m-d', $endDate);
+            $jalali = \Morilog\Jalali\Jalalian::fromFormat('Y/m/d', $endDate);
             $request->merge(['end_date' => $jalali->toCarbon()->format('Y-m-d')]);
         }
 
