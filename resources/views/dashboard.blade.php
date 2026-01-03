@@ -83,14 +83,14 @@
                                     $color = match($bed->status) {
                                         'available' => '#10b981',
                                         'occupied' => '#ef4444',
-                                        'needs_cleaning' => '#f59e0b',
+                                        'reserved' => '#f59e0b',
                                         'under_maintenance' => '#6b7280',
                                         default => '#e5e7eb'
                                     };
                                     $statusLabel = match($bed->status) {
                                         'available' => 'آزاد',
                                         'occupied' => 'اشغال',
-                                        'needs_cleaning' => 'نیاز به نظافت',
+                                        'reserved' => 'رزرو شده',
                                         'under_maintenance' => 'در تعمیر',
                                         default => 'نامشخص'
                                     };
@@ -205,7 +205,7 @@
                     @method('PUT')
                     <button type="submit" name="status" value="available" class="status-btn" style="flex: 1; min-width: 80px; padding: 10px; border: 2px solid #10b981; background: #d1fae5; color: #065f46; border-radius: 8px; cursor: pointer; font-size: 12px;">🟢 آزاد</button>
                     <button type="submit" name="status" value="occupied" class="status-btn" style="flex: 1; min-width: 80px; padding: 10px; border: 2px solid #ef4444; background: #fee2e2; color: #991b1b; border-radius: 8px; cursor: pointer; font-size: 12px;">🔴 اشغال</button>
-                    <button type="submit" name="status" value="needs_cleaning" class="status-btn" style="flex: 1; min-width: 80px; padding: 10px; border: 2px solid #f59e0b; background: #fef3c7; color: #92400e; border-radius: 8px; cursor: pointer; font-size: 12px;">🟡 نظافت</button>
+                    <button type="submit" name="status" value="reserved" class="status-btn" style="flex: 1; min-width: 80px; padding: 10px; border: 2px solid #f59e0b; background: #fef3c7; color: #92400e; border-radius: 8px; cursor: pointer; font-size: 12px;">🟡 رزرو</button>
                     <button type="submit" name="status" value="under_maintenance" class="status-btn" style="flex: 1; min-width: 80px; padding: 10px; border: 2px solid #6b7280; background: #e5e7eb; color: #374151; border-radius: 8px; cursor: pointer; font-size: 12px;">⚫ تعمیر</button>
                 </form>
             </div>

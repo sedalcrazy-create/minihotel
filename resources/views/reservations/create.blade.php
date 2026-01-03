@@ -285,7 +285,7 @@
                 const bedColor = {
                     'available': '#10b981',
                     'occupied': '#ef4444',
-                    'needs_cleaning': '#f59e0b',
+                    'reserved': '#f59e0b',
                     'under_maintenance': '#6b7280'
                 }[bed.status] || '#e5e7eb';
 
@@ -314,7 +314,7 @@
                         <div style="font-size: 11px; color: #6b7280; margin-top: 5px;">
                             ${bed.status === 'available' ? 'آزاد' :
                               bed.status === 'occupied' ? 'اشغال' :
-                              bed.status === 'needs_cleaning' ? 'نظافت' : 'تعمیر'}
+                              bed.status === 'reserved' ? 'رزرو' : 'تعمیر'}
                         </div>
                     </label>
                 `;

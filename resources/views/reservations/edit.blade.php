@@ -163,7 +163,7 @@
                 const bedColor = {
                     'available': '#10b981',
                     'occupied': '#ef4444',
-                    'needs_cleaning': '#f59e0b',
+                    'reserved': '#f59e0b',
                     'under_maintenance': '#6b7280'
                 }[effectiveStatus] || '#e5e7eb';
 
@@ -192,7 +192,7 @@
                         <div style="font-size: 11px; color: #6b7280; margin-top: 5px;">
                             ${effectiveStatus === 'available' ? 'آزاد' :
                               effectiveStatus === 'occupied' ? 'اشغال' :
-                              effectiveStatus === 'needs_cleaning' ? 'نظافت' : 'تعمیر'}
+                              effectiveStatus === 'reserved' ? 'رزرو' : 'تعمیر'}
                         </div>
                     </label>
                 `;
