@@ -208,8 +208,13 @@ class ReservationController extends Controller
                 'created_by' => auth()->id(),
             ]);
 
-            // Attach beds
+            // Attach beds and update their status to reserved
             $reservation->beds()->attach($validated['bed_ids']);
+
+            // Update bed status to reserved
+            foreach ($validated['bed_ids'] as $bedId) {
+                \App\Models\Bed::find($bedId)->update(['status' => 'reserved']);
+            }
 
             ActivityLog::log('create', 'Reservation', $reservation->id, 'رزرو جدید ایجاد شد');
 

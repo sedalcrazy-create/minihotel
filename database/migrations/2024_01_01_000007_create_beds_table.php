@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('room_id')->constrained()->onDelete('cascade');
             $table->tinyInteger('number');
-            $table->enum('status', ['available', 'occupied', 'needs_cleaning', 'under_maintenance'])->default('available');
+            $table->enum('status', ['available', 'occupied', 'reserved', 'under_maintenance'])->default('available');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
 
