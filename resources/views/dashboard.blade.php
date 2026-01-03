@@ -33,7 +33,7 @@
         <div style="float: left; font-size: 12px; font-weight: normal;">
             <span style="display: inline-block; width: 15px; height: 15px; background: #10b981; margin-left: 5px; border-radius: 3px;"></span> آزاد
             <span style="display: inline-block; width: 15px; height: 15px; background: #ef4444; margin-right: 10px; margin-left: 5px; border-radius: 3px;"></span> اشغال
-            <span style="display: inline-block; width: 15px; height: 15px; background: #f59e0b; margin-right: 10px; margin-left: 5px; border-radius: 3px;"></span> نظافت
+            <span style="display: inline-block; width: 15px; height: 15px; background: #f59e0b; margin-right: 10px; margin-left: 5px; border-radius: 3px;"></span> رزرو
             <span style="display: inline-block; width: 15px; height: 15px; background: #6b7280; margin-right: 10px; margin-left: 5px; border-radius: 3px;"></span> تعمیر
             <span style="margin-right: 15px;">|</span>
             <span style="display: inline-block; width: 15px; height: 15px; background: #ff69b4; margin-left: 5px; border-radius: 3px;"></span> خانم‌ها
