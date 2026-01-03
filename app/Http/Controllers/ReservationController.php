@@ -401,6 +401,46 @@ class ReservationController extends Controller
         }
     }
 
+    public function destroy(Reservation $reservation)
+    {
+        // بررسی اینکه آیا رزرو کمتر از یک هفته قدمت دارد
+        $daysSinceCreation = $reservation->created_at->diffInDays(now());
+
+        if ($daysSinceCreation > 7) {
+            return back()->with('error', 'فقط می‌توان رزروهای کمتر از یک هفته را حذف کرد. این رزرو ' . $daysSinceCreation . ' روز قدمت دارد.');
+        }
+
+        DB::beginTransaction();
+        try {
+            // آزاد کردن تخت‌های این رزرو
+            foreach ($reservation->beds as $bed) {
+                if ($bed->status === 'occupied') {
+                    $bed->update(['status' => 'available']);
+                }
+            }
+
+            // جدا کردن ارتباط تخت‌ها
+            $reservation->beds()->detach();
+
+            $reservationId = $reservation->id;
+            $guestName = $reservation->guest_name;
+
+            // حذف رزرو
+            $reservation->delete();
+
+            ActivityLog::log('delete', 'Reservation', $reservationId, "حذف رزرو: {$guestName}");
+
+            DB::commit();
+
+            return redirect()->route('reservations.index')
+                ->with('success', 'رزرو با موفقیت حذف شد.');
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back()->with('error', 'خطا در حذف رزرو: ' . $e->getMessage());
+        }
+    }
+
     /**
      * تبدیل اعداد فارسی به انگلیسی
      */

@@ -55,8 +55,15 @@
                         </td>
                         <td>
                             <a href="{{ route('reservations.show', $reservation) }}" class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;">مشاهده</a>
-                            @if($reservation->status === 'pending' || $reservation->status === 'confirmed')
+                            @if($reservation->status === 'pending' || $reservation->status === 'confirmed' || $reservation->status === 'reserved')
                                 <a href="{{ route('reservations.edit', $reservation) }}" class="btn btn-secondary" style="padding: 5px 10px; font-size: 12px;">ویرایش</a>
+                            @endif
+                            @if($reservation->created_at->diffInDays(now()) <= 7)
+                                <form action="{{ route('reservations.destroy', $reservation) }}" method="POST" style="display: inline-block;" onsubmit="return confirm('آیا از حذف این رزرو اطمینان دارید؟');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn" style="padding: 5px 10px; font-size: 12px; background: #ef4444; color: white; border: none;">حذف</button>
+                                </form>
                             @endif
                         </td>
                     </tr>

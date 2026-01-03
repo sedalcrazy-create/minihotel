@@ -27,7 +27,7 @@
         </div>
 
         <div>
-            @if($reservation->status === 'pending' || $reservation->status === 'confirmed')
+            @if($reservation->status === 'pending' || $reservation->status === 'confirmed' || $reservation->status === 'reserved')
                 <a href="{{ route('reservations.edit', $reservation) }}" class="btn btn-primary">
                     ویرایش
                 </a>
@@ -44,6 +44,16 @@
                     @csrf
                     <button type="submit" class="btn btn-danger" onclick="return confirm('آیا از چک‌اوت این رزرو مطمئن هستید؟')">
                         ✗ چک‌اوت
+                    </button>
+                </form>
+            @endif
+
+            @if($reservation->created_at->diffInDays(now()) <= 7)
+                <form action="{{ route('reservations.destroy', $reservation) }}" method="POST" style="display: inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn" style="background: #ef4444; color: white;" onclick="return confirm('آیا از حذف این رزرو اطمینان دارید؟ این عمل غیرقابل بازگشت است.')">
+                        حذف رزرو
                     </button>
                 </form>
             @endif
