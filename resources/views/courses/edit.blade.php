@@ -26,12 +26,12 @@
 
             <div class="form-group">
                 <label for="start_date">تاریخ شروع *</label>
-                <input type="text" name="start_date" class="jalali-datepicker" id="start_date" class="form-control" value="{{ old('start_date', verta($course->start_date ?? $conference->start_date)->format('Y\/m\/d')) }}" required>
+                <input type="text" name="start_date" id="start_date" class="form-control jalali-datepicker" autocomplete="off" value="{{ old('start_date', verta($course->start_date ?? $conference->start_date)->format('Y\/m\/d')) }}" required>
             </div>
 
             <div class="form-group">
                 <label for="end_date">تاریخ پایان *</label>
-                <input type="text" name="end_date" class="jalali-datepicker" id="end_date" class="form-control" value="{{ old('end_date', verta($course->end_date ?? $conference->end_date)->format('Y\/m\/d')) }}" required>
+                <input type="text" name="end_date" id="end_date" class="form-control jalali-datepicker" autocomplete="off" value="{{ old('end_date', verta($course->end_date ?? $conference->end_date)->format('Y\/m\/d')) }}" required>
             </div>
 
             <div class="form-group">

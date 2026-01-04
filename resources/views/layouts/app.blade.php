@@ -624,7 +624,7 @@
                         <span class="particle particle-3"></span>
                         <span class="particle particle-4"></span>
                     </div>
-                    <img src="https://miniapp.darmanjoo.ir/assets/logo-bmi.png" alt="لوگو بانک ملی" class="header-logo-image">
+                    <img src="{{ asset('logo.png') }}" alt="لوگو بانک ملی" class="header-logo-image">
                 </div>
             </div>
         </div>

@@ -13,11 +13,11 @@
             <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: flex-end;">
                 <div class="form-group" style="margin-bottom: 0;">
                     <label>از تاریخ:</label>
-                    <input type="date" name="from_date" class="form-control" value="{{ request('from_date') }}">
+                    <input type="text" name="from_date" class="form-control jalali-datepicker" autocomplete="off" value="{{ request('from_date') }}">
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
                     <label>تا تاریخ:</label>
-                    <input type="date" name="to_date" class="form-control" value="{{ request('to_date') }}">
+                    <input type="text" name="to_date" class="form-control jalali-datepicker" autocomplete="off" value="{{ request('to_date') }}">
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
                     <label>وضعیت:</label>
